@@ -1,0 +1,130 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-course_agent}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-in-prod}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app} -d ${POSTGRES_DB:-course_agent}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.1
+    profiles: ["qdrant"]
+    volumes:
+      - qdrantdata:/qdrant/storage
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-change-me-in-prod}@postgres:5432/${POSTGRES_DB:-course_agent}
+      REDIS_URL: redis://redis:6379/0
+      USE_CELERY: "true"
+      AUTO_CREATE_TABLES: "false"
+      UPLOAD_DIR: /data/uploads
+      VECTOR_DIR: /data/vectors
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./data/uploads:/data/uploads
+      - ./data/vectors:/data/vectors
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  worker-io:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "io", "-c", "2", "--loglevel=INFO"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-change-me-in-prod}@postgres:5432/${POSTGRES_DB:-course_agent}
+      REDIS_URL: redis://redis:6379/0
+      USE_CELERY: "true"
+      UPLOAD_DIR: /data/uploads
+      VECTOR_DIR: /data/vectors
+    depends_on:
+      api:
+        condition: service_started
+      redis:
+        condition: service_started
+    volumes:
+      - ./data/uploads:/data/uploads
+      - ./data/vectors:/data/vectors
+    restart: unless-stopped
+
+  worker-llm:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "llm,default", "-c", "4", "--loglevel=INFO"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-change-me-in-prod}@postgres:5432/${POSTGRES_DB:-course_agent}
+      REDIS_URL: redis://redis:6379/0
+      USE_CELERY: "true"
+      UPLOAD_DIR: /data/uploads
+      VECTOR_DIR: /data/vectors
+    depends_on:
+      api:
+        condition: service_started
+      redis:
+        condition: service_started
+    volumes:
+      - ./data/uploads:/data/uploads
+      - ./data/vectors:/data/vectors
+    restart: unless-stopped
+
+  flower:
+    image: mher/flower:2.0
+    profiles: ["ops"]
+    command: ["celery", "--broker=redis://redis:6379/0", "flower", "--port=5555"]
+    depends_on:
+      redis:
+        condition: service_started
+    ports:
+      - "5555:5555"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      api:
+        condition: service_started
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+volumes:
+  pgdata: {}
+  redisdata: {}
+  qdrantdata: {}

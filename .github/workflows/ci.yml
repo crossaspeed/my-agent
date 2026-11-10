@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: 后端测试与静态检查
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+
+      - name: 安装依赖
+        run: |
+          python -m pip install -U pip
+          pip install -e ".[dev]"
+
+      - name: Ruff
+        run: ruff check app tests
+
+      - name: Alembic 迁移可执行
+        env:
+          SECRET_KEY: ci-secret-key-should-be-long-enough-32chars
+          DATABASE_URL: sqlite+aiosqlite:///./data/ci.db
+        run: |
+          mkdir -p data
+          alembic upgrade head
+
+      - name: Pytest
+        env:
+          SECRET_KEY: ci-secret-key-should-be-long-enough-32chars
+          LLM_PROVIDER: mock
+          EMBEDDING_PROVIDER: hash
+          VECTOR_BACKEND: local
+          USE_CELERY: 'false'
+        run: pytest -q
+
+  frontend:
+    name: 前端类型检查与构建
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 安装依赖
+        run: npm ci || npm install
+
+      - name: 类型检查
+        run: npx tsc --noEmit
+
+      - name: 构建
+        run: npm run build
+
+  compose:
+    name: docker compose 配置校验
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 生成 .env
+        run: cp .env.example .env
+      - name: 校验编排文件
+        run: docker compose -f docker-compose.yml -f docker-compose.dev.yml config > /dev/null

@@ -1,0 +1,50 @@
+# 开发覆盖层：热重载、暴露调试端口、日志更详细
+services:
+  api:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--proxy-headers"]
+    environment:
+      APP_ENV: dev
+      LOG_LEVEL: DEBUG
+      AUTO_CREATE_TABLES: "true"
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/alembic:/app/alembic
+      - ./data/uploads:/data/uploads
+      - ./data/vectors:/data/vectors
+
+  worker-io:
+    environment:
+      APP_ENV: dev
+      LOG_LEVEL: DEBUG
+    volumes:
+      - ./backend/app:/app/app
+      - ./data/uploads:/data/uploads
+      - ./data/vectors:/data/vectors
+
+  worker-llm:
+    environment:
+      APP_ENV: dev
+      LOG_LEVEL: DEBUG
+    volumes:
+      - ./backend/app:/app/app
+      - ./data/uploads:/data/uploads
+      - ./data/vectors:/data/vectors
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
