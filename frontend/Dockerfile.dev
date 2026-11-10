@@ -1,0 +1,10 @@
+# 前端开发镜像（docker compose --profile dev 或 docker-compose.dev.yml 使用）
+FROM node:22-alpine
+
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci || npm install
+
+COPY . .
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
