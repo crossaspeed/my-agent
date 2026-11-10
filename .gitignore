@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Runtime data
+backend/data/
+data/
+backups/
+*.db
+*.sqlite3
+logs/
+
+# Playwright
+test-results/
+playwright-report/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
