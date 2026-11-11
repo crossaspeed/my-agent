@@ -136,7 +136,8 @@ async def retrieve_node(state: dict[str, Any]) -> dict[str, Any]:
     names = [kp_names.get(int(k), "") for k in [state.get("root_kp_id")] + list(state.get("prerequisite_kps") or [])]
     names = [n for n in names if n]
     query = " ".join(names) or str(question.get("stem", ""))[:120]
-    chunks = await retrieve(ctx.session, ctx.course_id, query, top_k=5)
+    # 导学是 SSE 流式交互，首字延迟优先，显式不启用重排（见 docs/experiments/retrieval-upgrade.md）
+    chunks = await retrieve(ctx.session, ctx.course_id, query, top_k=5, use_rerank=False)
     ctx.remember(chunks)
     return {"refs": [c.to_ref() for c in chunks], "ref_ids": [c.chunk_id for c in chunks]}
 
@@ -145,7 +146,8 @@ async def retrieve_followup(state: dict[str, Any]) -> dict[str, Any]:
     ctx: AgentContext = state["_ctx"]
     question = state.get("question") or {}
     query = f"{state.get('user_query') or ''} {question.get('stem', '')[:80]}".strip()
-    chunks = await retrieve(ctx.session, ctx.course_id, query, top_k=5)
+    # 导学是 SSE 流式交互，首字延迟优先，显式不启用重排（见 docs/experiments/retrieval-upgrade.md）
+    chunks = await retrieve(ctx.session, ctx.course_id, query, top_k=5, use_rerank=False)
     ctx.remember(chunks)
     existing = {int(r["chunk_id"]) for r in state.get("refs") or []}
     merged = list(state.get("refs") or []) + [

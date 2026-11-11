@@ -95,7 +95,20 @@ class Settings(BaseSettings):
     # 判为考纲外的相关度上限：未登录词多 且 最强证据相关度也低于此值 → 拒答
     OFF_SYLLABUS_RELEVANCE_FLOOR: float = 0.5
     CITATION_FUZZY_THRESHOLD: float = 0.85
-    ENABLE_RERANK: bool = False
+
+    # ---------- 重排（两阶段检索的第二阶段） ----------
+    # off（默认，只用 RRF 排序）| cross（交叉编码器本地推理）| llm（用现有大模型打分）
+    RERANK_BACKEND: str = "off"
+    RERANK_MODEL: str = "BAAI/bge-reranker-v2-m3"
+    # 进入重排的候选数（太多会线性增加 CPU 推理耗时）
+    RERANK_CANDIDATES: int = 20
+    RERANK_BATCH_SIZE: int = 8
+    # 候选文本截断长度：交叉编码器输入越长越慢，课程片段前 600 字通常已包含核心结论
+    RERANK_MAX_CHARS: int = 600
+    # 重排"有信息量"的最低分：交叉编码器对无关片段输出 sigmoid ≈ 0.5（logit≈0），
+    # 若最高分都低于该值，说明模型认为"都不相关"，此时按分数排序只是噪声，
+    # 应退回召回顺序；实测该阈值使口语类查询的 Hit@3 由 92.3% 恢复到 100%
+    RERANK_MIN_INFORMATIVE_SCORE: float = 0.55
 
     # ---------- 业务约束 ----------
     MAX_UPLOAD_MB: int = 50

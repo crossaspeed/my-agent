@@ -14,7 +14,7 @@ from app.core import cache
 from app.core.config import settings
 from app.core.logging import get_logger
 from app.db.models import ChunkKnowledgePoint, Document, DocumentChunk
-from app.rag import bm25_index
+from app.rag import bm25_index, rerank
 from app.rag.embedder import get_embedder
 from app.rag.vector_store import get_vector_store
 
@@ -38,6 +38,8 @@ class RetrievedChunk:
     coverage: float = 0.0
     # 查询有效词中不在本课程语料里的占比（0~1），用于判断"考纲外提问"
     unknown_ratio: float = 0.0
+    # 重排阶段给出的相关性分（0~1）；未启用重排时为 None
+    rerank_score: float | None = None
     meta: dict[str, Any] = field(default_factory=dict)
 
     def to_ref(self, quote: str | None = None) -> dict[str, Any]:
@@ -60,6 +62,7 @@ class RetrievedChunk:
             "relevance": round(self.relevance, 4),
             "coverage": round(self.coverage, 4),
             "unknown_ratio": round(self.unknown_ratio, 4),
+            "rerank_score": self.rerank_score,
             "source": self.source,
             "page_no": self.page_no,
             "slide_no": self.slide_no,
@@ -80,8 +83,10 @@ def rrf_fuse(dense: list[int], sparse: list[int], k: int = 60) -> list[tuple[int
 
 
 def _cache_key(course_id: int, query: str, top_k: int, kp_ids: list[int] | None,
-               doc_ids: list[int] | None) -> str:
-    raw = json.dumps([course_id, query, top_k, kp_ids, doc_ids], ensure_ascii=False)
+               doc_ids: list[int] | None, rerank_backend: str = "off") -> str:
+    raw = json.dumps(
+        [course_id, query, top_k, kp_ids, doc_ids, rerank_backend], ensure_ascii=False
+    )
     return "search:" + hashlib.sha256(raw.encode()).hexdigest()[:32]
 
 
@@ -135,7 +140,12 @@ async def retrieve(
 ) -> list[RetrievedChunk]:
     """混合检索入口（签名与计划书 8.5 冻结版本一致）。"""
     top_k = top_k or settings.RETRIEVE_TOP_K
-    key = _cache_key(course_id, query, top_k, kp_ids, doc_ids)
+    # 两阶段检索的第二阶段由配置总开关控制，调用点用 use_rerank 表达"本场景允许重排"
+    rerank_backend = settings.RERANK_BACKEND.strip().lower()
+    do_rerank = bool(use_rerank) and rerank_backend not in ("", "off", "none", "0", "false")
+    key = _cache_key(
+        course_id, query, top_k, kp_ids, doc_ids, rerank_backend if do_rerank else "off"
+    )
     if use_cache:
         cached = cache.get_json(key)
         if cached:
@@ -171,7 +181,8 @@ async def retrieve(
         return []
 
     fused = rrf_fuse(dense_ids, sparse_ids, settings.RRF_K)
-    fused_ids = [cid for cid, _ in fused][: max(top_k * 3, 20)]
+    pool = max(top_k * 3, 20, settings.RERANK_CANDIDATES if do_rerank else 0)
+    fused_ids = [cid for cid, _ in fused][:pool]
     if kp_ids:
         allowed = await _filter_by_kp(session, fused_ids, kp_ids)
         fused_ids = [cid for cid in fused_ids if cid in allowed]
@@ -197,6 +208,18 @@ async def retrieve(
             max(dense_score.get(cid, 0.0), sparse_norm.get(cid, 0.0), chunk.coverage), 4
         )
         results.append(chunk)
+
+    # 第二阶段：对 RRF 召回的候选做精排（配置开关 + 调用点允许才生效，失败自动降级）
+    if do_rerank and results:
+        rerank_inputs = len(results)
+        results = await rerank.apply_rerank(query, results, max(top_k, 1))
+        logger.info(
+            "rerank_applied",
+            course_id=course_id,
+            backend=rerank.backend_name(),
+            candidates=rerank_inputs,
+            top1_rerank=results[0].rerank_score if results else None,
+        )
 
     if expand and results:
         results = await _expand(session, results, top_k)

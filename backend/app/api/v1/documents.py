@@ -79,6 +79,7 @@ async def search(
         kp_ids=req.kp_ids,
         doc_ids=req.doc_ids,
         expand=req.expand,
+        use_rerank=req.use_rerank,
         use_cache=False,
     )
     return ok(

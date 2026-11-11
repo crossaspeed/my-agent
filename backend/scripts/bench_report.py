@@ -26,6 +26,7 @@ def summarize(payload: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "embedder": payload["metrics"].get("embedder"),
+        "rerank": payload["metrics"].get("rerank_backend", "off"),
         "hit@1": rate(sum(r["hit@1"] for r in in_scope), n_in),
         "hit@3": rate(sum(r["hit@3"] for r in in_scope), n_in),
         "false_reject": rate(sum(1 for r in in_scope if not r["accepted"]), n_in),
@@ -45,13 +46,13 @@ def summarize(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def main(paths: list[str]) -> None:
-    print("| 配置 | embedder | Hit@1 | Hit@3 | 误拒率 | 误纳率 | 静默错误 | 门禁命中 | 平均相关度 |")
-    print("|---|---|---|---|---|---|---|---|---|")
+    print("| 配置 | embedder | 重排 | Hit@1 | Hit@3 | 误拒率 | 误纳率 | 静默错误 | 门禁命中 | 平均相关度 |")
+    print("|---|---|---|---|---|---|---|---|---|---|")
     for path in paths:
         payload = json.loads(Path(path).read_text(encoding="utf-8"))
         m = summarize(payload)
         print(
-            f"| {Path(path).stem} | {m['embedder']} | {m['hit@1']:.3f} | {m['hit@3']:.3f} "
+            f"| {Path(path).stem} | {m['embedder']} | {m['rerank']} | {m['hit@1']:.3f} | {m['hit@3']:.3f} "
             f"| {m['false_reject']:.3f} | {m['false_accept']:.3f} | {m['silent_error']} "
             f"| {m['gate_hit']:.3f} | {m['avg_relevance']:.3f} |"
         )

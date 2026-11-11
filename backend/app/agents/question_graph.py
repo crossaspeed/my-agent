@@ -17,6 +17,7 @@ from app.agents.validators import validate_drafts
 from app.core.config import settings
 from app.core.exceptions import KnowledgeNotCovered
 from app.core.logging import get_logger
+from app.rag import rerank
 from app.rag.citation import citation_coverage, verify_refs
 from app.rag.retriever import RetrievedChunk, retrieve
 
@@ -105,28 +106,46 @@ async def retrieve_node(state: dict[str, Any]) -> dict[str, Any]:
         kp_id = spec["kp_id"]
         best: dict[int, RetrievedChunk] = {}
         for query in queries.get(kp_id, [spec["name"]])[:3]:
+            # 这里不逐条 query 重排：交叉编码器在 CPU 上约 60ms/对，19 个知识点 × 3 条 query
+            # 会累积到分钟级；改为每个知识点只对"合并后的候选集"重排一次（见下方）
             hits = await retrieve(
-                ctx.session, ctx.course_id, query, top_k=5, doc_ids=doc_ids, use_cache=True
+                ctx.session,
+                ctx.course_id,
+                query,
+                top_k=5,
+                doc_ids=doc_ids,
+                use_rerank=False,
+                use_cache=True,
             )
             for hit in hits:
                 prev = best.get(hit.chunk_id)
                 if prev is None or hit.relevance > prev.relevance:
                     best[hit.chunk_id] = hit
-        ordered = sorted(best.values(), key=lambda c: -c.relevance)[:5]
+        merged = list(best.values())
+        reranked = False
+        if merged and rerank.backend_name() != "off":
+            merged = await rerank.apply_rerank(spec["name"], merged, 5)
+            reranked = True
+            for hit in merged:
+                best[hit.chunk_id] = hit
+        # 重排返回的顺序就是最终顺序，不能再按 relevance 排一遍（否则重排白做）
+        ordered = (merged if reranked else sorted(merged, key=lambda c: -c.relevance))[:5]
         top = ordered[0] if ordered else None
-        # 双重门禁：相关度太低 → 依据不足；查询词大多不在语料里"且"相关度也低 → 考纲外提问。
-        # 必须联判：多语言向量模型能让英文提问正确命中中文语料，只按词表否决会误杀。
+        # 门禁看"候选集里最强的证据有多强"，不看它在重排后的位置：
+        # 重排会把语义最贴切的片段提到第一，其融合相关度可能反而低于另一位候选，
+        # 若按位置判定会把"其实有依据"的查询误拒（实测 2/13）。
+        best_relevance = max((c.relevance for c in ordered), default=0.0)
         off_syllabus = (
             top is not None
             and top.unknown_ratio >= settings.MAX_UNKNOWN_TERM_RATIO
-            and top.relevance < settings.OFF_SYLLABUS_RELEVANCE_FLOOR
+            and best_relevance < settings.OFF_SYLLABUS_RELEVANCE_FLOOR
         )
-        if top is None or top.relevance < settings.MIN_RETRIEVE_SCORE or off_syllabus:
+        if top is None or best_relevance < settings.MIN_RETRIEVE_SCORE or off_syllabus:
             reason = (
-                f"约 {top.unknown_ratio:.0%} 的查询词在课件中不存在且相关度仅 {top.relevance:.2f}，"
+                f"约 {top.unknown_ratio:.0%} 的查询词在课件中不存在且相关度仅 {best_relevance:.2f}，"
                 "判为考纲外"
                 if off_syllabus and top is not None
-                else f"最高相关度 {(top.relevance if top else 0):.2f}"
+                else f"最高相关度 {best_relevance:.2f}"
             )
             warnings.append(
                 f"知识点「{spec['name']}」在知识库中检索不到足够依据（{reason}），已跳过"

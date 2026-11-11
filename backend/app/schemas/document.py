@@ -58,6 +58,8 @@ class SearchRequest(BaseModel):
     kp_ids: list[int] | None = None
     doc_ids: list[int] | None = None
     expand: bool = False
+    # 是否对本条 query 启用重排（需服务端 RERANK_BACKEND 非 off 才真正生效）
+    use_rerank: bool = False
 
 
 class RetrievedChunkOut(BaseModel):

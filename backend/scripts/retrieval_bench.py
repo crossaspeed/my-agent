@@ -47,18 +47,29 @@ CASES: list[tuple[str, str, list[int]]] = [
 ]
 
 
-async def main(out_path: str) -> None:
+async def main(out_path: str, use_rerank: bool = False) -> None:
     embedder = get_embedder()
     rows = []
     async with AsyncSessionLocal() as session:
         for category, query, gold in CASES:
-            hits = await retrieve(session, COURSE_ID, query, top_k=TOP_K, use_cache=False)
+            hits = await retrieve(
+                session, COURSE_ID, query, top_k=TOP_K, use_rerank=use_rerank, use_cache=False
+            )
             top = hits[:3]
             top1 = top[0] if top else None
-            # 门禁口径与 question_graph 一致：先按 relevance 取最强证据，再判是否可用
-            gate = max(hits, key=lambda h: h.relevance) if hits else None
+            # 门禁口径与 question_graph 一致：
+            # 启用重排时证据顺序就是重排顺序（取第一条），否则按 relevance 取最强证据
+            rerank_on = use_rerank and settings.RERANK_BACKEND.strip().lower() not in (
+                "", "off", "none", "0", "false",
+            )
+            gate = (
+                hits[0]
+                if rerank_on and hits
+                else (max(hits, key=lambda h: h.relevance) if hits else None)
+            )
             unknown_ratio = getattr(gate, "unknown_ratio", None)
-            relevance = float(gate.relevance) if gate else 0.0
+            # 门禁相关度取候选集最大值（与 question_graph 一致），与重排位置无关
+            relevance = max((h.relevance for h in hits), default=0.0)
 
             off_syllabus = (
                 unknown_ratio is not None
@@ -83,6 +94,7 @@ async def main(out_path: str) -> None:
                             "score": round(float(h.score), 4),
                             "relevance": round(float(h.relevance), 4),
                             "coverage": round(float(getattr(h, "coverage", 0.0) or 0.0), 4),
+                            "rerank_score": getattr(h, "rerank_score", None),
                             "source": h.source,
                         }
                         for h in top
@@ -125,6 +137,8 @@ async def main(out_path: str) -> None:
         "relevance_top1_median": round(statistics.median([r["relevance_top1"] for r in rows]), 4),
     }
 
+    metrics["rerank"] = bool(use_rerank) and settings.RERANK_BACKEND.strip().lower() != "off"
+    metrics["rerank_backend"] = settings.RERANK_BACKEND
     payload = {"metrics": metrics, "rows": rows}
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
@@ -132,4 +146,8 @@ async def main(out_path: str) -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(main(sys.argv[1] if len(sys.argv) > 1 else "/tmp/bench.json"))
+    out = "/tmp/bench.json"
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    if args:
+        out = args[0]
+    asyncio.run(main(out, use_rerank="--rerank" in sys.argv[1:]))

@@ -144,7 +144,9 @@ async def retrieve_rubric(state: dict[str, Any]) -> dict[str, Any]:
     if not query:
         return {"retrieved_refs": []}
     try:
-        chunks = await retrieve(ctx.session, ctx.course_id, query[:300], top_k=5)
+        chunks = await retrieve(
+            ctx.session, ctx.course_id, query[:300], top_k=5, use_rerank=True
+        )
     except Exception as exc:
         logger.warning("grader_retrieve_failed", error=str(exc))
         chunks = []
