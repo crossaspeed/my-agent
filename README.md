@@ -176,7 +176,7 @@ cd frontend && npm run build               # tsc + vite build 通过
 | 构建时 `npm error ... 401 Unauthorized` | `package-lock.json` 指向了需要登录的私有源 | 已统一改为公共源；若再次出现，`npm install --package-lock-only --registry=https://registry.npmjs.org` 后重建 |
 | pip 依赖下载慢/超时 | 容器内访问 PyPI 慢 | `docker compose build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple` |
 | 端口占用 `bind: ... 80` | Windows 系统进程占用 80 | web 已固定映射 8080，直接访问 http://localhost:8080 |
-| 页面能开但接口 502 | api 还没 healthy，或 migrate 失败 | `docker compose logs migrate api`；修复后用 `docker compose up -d` 重试 |
+| 页面能开但接口 502 | ① api 还没 healthy / migrate 失败；② api 容器重建后 IP 变了，而 nginx 只在启动时解析一次上游 | ① `docker compose logs migrate api`；② 已改为按请求解析（`resolver 127.0.0.11`），旧镜像可先 `docker compose restart web` 应急 |
 | 上传课件一直"解析中" | worker 未启动/任务丢失 | 查看 `docker compose logs worker-io`；api 重启时会自动回收卡住任务并重新入队（最多 3 次） |
 | 上传课件失败，job 报 `attached to a different loop` | 旧版本后台任务复用了上一个事件循环的数据库连接（同一 worker 的第二个任务必挂） | 已修复：任务改用隔离会话 `task_session()`；重建镜像并重启 worker 即可 |
 | `docker compose build` 报 `read-only file system` | 宿主盘写满，Docker 虚拟磁盘被挂成只读 | 先在宿主机腾出空间（`docker builder prune -af` 可回收数十 GB），再重启 Docker Desktop |
