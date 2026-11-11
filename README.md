@@ -108,6 +108,21 @@ docker compose ps                  # 全部服务应显示 (healthy)
 > 常用命令：`make logs`（跟踪三服务日志）、`make ps`、`make stop`、`make seed-docker`、`make backup`。
 > 本机没有 `make` 时，直接用等价的 `docker compose ...` 命令。
 
+**可选：切换到 BGE-M3 真实语义向量**（默认 `hash` 是词面近似，语义/跨语言检索会失效）
+
+```bash
+# 1) 首次下载权重（2.27GB，落在 ./data/models，不会每次重建容器都重下）
+docker compose exec api python -c "from sentence_transformers import SentenceTransformer as S; S('BAAI/bge-m3')"
+# 2) .env 里改：EMBEDDING_PROVIDER=local（MODEL=bge-m3 / DIM=1024 已默认）
+docker compose up -d api worker-io worker-llm
+# 3) 换模型必须重建索引
+docker compose exec api python -m app.cli reindex --course-id 1
+```
+
+> 镜像默认带 embedding 依赖（约 2.7GB，含 CPU 版 torch）。不需要语义检索时用
+> `BACKEND_EXTRAS=postgres,queue docker compose build` 可回到 1GB 左右。
+
+
 
 ### 3.2 方式二：本机直跑（无需 Docker，默认零依赖）
 
@@ -136,7 +151,7 @@ cd frontend && npm install && npm run dev     # http://127.0.0.1:5173（已代�
 ```bash
 curl http://127.0.0.1:8000/health          # {"status":"ok","dependencies":{...}}
 docker compose ps                          # 6 个服务全部 (healthy)
-make test                                  # 后端 89 passed / 1 skipped
+make test                                  # 后端 91 passed / 1 skipped
 cd frontend && npm run build               # tsc + vite build 通过
 ```
 
@@ -215,7 +230,7 @@ cd frontend && npm run build               # tsc + vite build 通过
 |---|---|---|---|
 | 数据库 | PostgreSQL（`asyncpg`） | SQLite（WAL + `busy_timeout`） | `DATABASE_URL` 前缀为 sqlite 或驱动缺失 |
 | 向量库 | Qdrant / Chroma | 本地 JSON + numpy（余弦） | 未安装 `vector` 额外依赖或配置为 local |
-| Embedding | OpenAI 兼容 API / 本地 BGE-M3 | 字符 n-gram 哈希向量（确定性、无网络） | 未配置 key 或调用失败 |
+| Embedding | 本地 BGE-M3（`local`）/ OpenAI 兼容 API（`api`） | 字符 n-gram 哈希向量（确定性、无网络） | 未装 `embedding` 依赖或未配置 key（会打印 `embedder_fallback`） |
 | LLM | deepseek/qwen/glm/OpenAI | Mock LLM（按场景生成结构化结果，引用真实 chunk） | `LLM_PROVIDER=mock` 或熔断 |
 | 任务队列 | Celery + Redis | 进程内线程池 | `USE_CELERY=false` 或 redis 不可达 |
 | 缓存/限流 | Redis | 进程内 LRU + 滑动窗口 | 同上 |
@@ -227,7 +242,7 @@ cd frontend && npm run build               # tsc + vite build 通过
 ## 7. 测试与评测
 
 ```bash
-make test        # pytest：89 passed, 1 skipped（单元 8 组 + 集成 3 组主链路）
+make test        # pytest：91 passed, 1 skipped（单元 8 组 + 集成 3 组主链路）
 make lint        # ruff + tsc --noEmit，零告警
 make build       # 前端生产构建
 ```
@@ -295,9 +310,11 @@ make build       # 前端生产构建
 
 ## 10. 已知限制
 
-- 演示知识库仅 2 份 markdown 课件（6 个分块），检索指标只能说明流程正确，不足以支撑规模结论；换真实课件后需重跑 `make eval`
+- 演示知识库仅 4 份 markdown 课件（8 个分块），检索指标只能说明流程正确，不足以支撑规模结论；换真实课件后需重跑 `make eval` 与 `scripts/retrieval_bench.py`
 - PDF 扫描页未接入 OCR（仅记录 `ocr_pages`，提示人工补录）
-- 默认 `hash` 向量是**词面**近似，语义召回能力弱；生产应切 `api`/`local` 并在切换后重建索引
+- `.env.example` 默认仍为 `hash`（保证克隆即跑、不下载 2GB 模型）；**要真实语义检索**请切 `EMBEDDING_PROVIDER=local`（BGE-M3）或 `api`，切换后必须 `reindex`
+- 检索门禁按「未登录词率 + 相关度」双条件判定，仍无法拦住"部分术语命中"的领域外提问（如用含"数据库"的 DNS 段落回答 B+ 树问题）；`use_rerank` 目前是**声明但未实现**的参数
+- 升级过程与量化收益见 [`docs/experiments/retrieval-upgrade.md`](docs/experiments/retrieval-upgrade.md)（Hit@1 53.8%→69.2%，Hit@3 76.9%→100%）
 - 主观题评分依赖 LLM 质量，低置信结果转人工（`needs_human`），系统不做「自动放行」
 - 前端未做 SSR 与移动端深度适配（测评页已按栅格自适应）
 - 压测脚本已就绪但需在目标机器执行后才能填入实测数字

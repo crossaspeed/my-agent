@@ -41,11 +41,11 @@
 | M2-6 | 清洗规则链 | 🟡 | 实现 9 条规则（计划书写 8 条）；`clean_ratio` 指标可用于论文统计 |
 | M2-7 | 结构感知分块 | ✅ | 标题栈 `heading_path`、表格整块保护、句级重叠；块的章节归属以正文为准（本轮修正） |
 | M2-8 | 分块落库 + 文档状态机 | ✅ | `pending→parsing→ready/failed`，启动时 `reconcile_stuck_documents` 兜底 |
-| M2-9 | Embedder 抽象 + 双实现 | 🟡 | 实现 `hash`（默认，无网络）/`api`（OpenAI 兼容）/`local`（BGE-M3）；`local` 未实机验证模型下载 |
+| M2-9 | Embedder 抽象 + 双实现 | ✅ | `hash`（默认，无网络）/`api`（OpenAI 兼容）/`local`（BGE-M3，**已实机**：CPU torch + 权重挂载持久化 + 2.27GB 下载实测）|
 | M2-10 | VectorStore 抽象 + Chroma/Qdrant | 🟡 | 三实现齐全，**默认走 `local`（JSON+numpy）**；Chroma/Qdrant 未实机验证（本机无 Docker、未装可选依赖） |
 | M2-11 | 任务队列 + `parse_document` 分阶段进度 | 🟡 | 分阶段 5/40/60/75/95 已实现；默认 **进程内线程池**，Celery 代码路径已写但未实机跑通 |
 | M2-12 | BM25（课程级 LRU + dirty） | ✅ | jieba + rank_bm25；删除/重解析时 `invalidate` |
-| M2-13 | 混合检索 RRF + `/search` 调试接口 | ✅ | `rrf_fuse(k=60)`；`docs/experiments/retrieval.csv` 有 10 条 query 的 top3 对比 |
+| M2-13 | 混合检索 RRF + `/search` 调试接口 | ✅ | `rrf_fuse(k=60)`；本轮修复「相关性阈值恒失效」并加考纲外门禁，指标见 `docs/experiments/retrieval-upgrade.md`（Hit@1 53.8%→69.2%、Hit@3 76.9%→100%）|
 | M2-14 | 上传区/文档列表/进度条/原文抽屉 | ✅ | `DocumentsTab.tsx` + `TaskProgress` + 分块预览抽屉（含关键词检索、分页） |
 
 ## M3 出题官
@@ -151,14 +151,26 @@
 14. **前端 lock 文件指向私有源**
     `package-lock.json` 里 214 个依赖的 `resolved` 全是你本机的 `packages.aliyun.com` 私有源，容器内无凭据 → `npm ci` 401。已改为 `registry.npmjs.org`（路径与完整性哈希不变），使镜像可复现构建。
 
+15. **相关性阈值恒失效（实机评测才暴露）**
+    `sparse_norm = score / max_score` 使 BM25 的 top1 恒为 1.0，`relevance` 随之为 1.0，`MIN_RETRIEVE_SCORE` 永不触发（实测 16 条查询的 relevance 中位数 0.909）。改为饱和归一 `raw/(raw+K)`（K=6）并把"查询词覆盖率"纳入 `relevance` 取最大，阈值才具备绝对尺度。
+
+16. **Embedding 从哈希升级为 BGE-M3**
+    哈希向量在相关/不相关片段上的余弦差异不足 0.1（0.02–0.23），无语义判别力。镜像改为预装 CPU 版 torch（官方默认源会拉 CUDA，+3GB），权重缓存到挂载卷 `./data/models`；切换后强制 `reindex`。代价：镜像 988MB→2.7GB、单条 query 向量化 0.1ms→101.8ms。
+
+17. **考纲外门禁必须与相关度联判**
+    最初只用"查询词未登录率 ≥0.75"否决，实测把 `three-way handshake`、`congestion control` 两条英文提问误杀（BGE-M3 本来已正确命中中文语料）。改为「未登录率 ≥0.5 **且** 相关度 <0.5」双条件后，跨语言提问正确放行，越界提问误纳率 66.7%→33.3%。
+
 ---
 
 ## 已知技术债
 
 优先级从高到低：
 
-1. **仍未实机验证**：Chroma/Qdrant 运行态、`local` BGE-M3 向量、Playwright E2E、Locust 压测、PG 连接池与 EXPLAIN。
-   （Docker 全栈、Celery 双队列、PG + Alembic 迁移、Nginx 反代下的 SSE 已实机验证通过。）
+1. **仍未实机验证**：Chroma/Qdrant 运行态、Playwright E2E、Locust 压测、PG 连接池与 EXPLAIN。
+   （Docker 全栈、Celery 双队列、PG + Alembic 迁移、Nginx 反代下的 SSE、本地 BGE-M3 向量均已实机验证通过。）
+2. **`use_rerank` 是空参数**：`ENABLE_RERANK` / `retrieve(use_rerank=)` 只声明未实现，对外文档不得声称"两阶段检索"。
+   当前口语查询已能做到 Hit@3=100% 但 Hit@1 仅 2/5，重排是实现该提升的最短路径。
+3. **考纲外门禁仍漏"部分术语命中"**：`数据库 B+ 树索引`这类查询因分词命中"数据库/过程"而 unk 仅 0.375，未被拦截；需 rerank 或生成前 LLM 切题判定。
 2. **人工改分（M4-10 P1）**：目前只能整卷重跑阅卷，教师无法对单题改分并重算总分。
 3. **多轮对话摘要压缩**：当前只截取最近 10 条，长会话会丢早期信息。
 4. **OCR**：扫描版 PDF 只记录 `ocr_pages` 提示，不提取文字。

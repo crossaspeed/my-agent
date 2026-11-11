@@ -1,0 +1,639 @@
+{
+  "metrics": {
+    "embedder": "HashEmbedder",
+    "dim": 1024,
+    "course_chunks": null,
+    "n_total": 16,
+    "n_in_scope": 13,
+    "n_out_scope": 3,
+    "hit@1": 0.5385,
+    "hit@3": 0.7692,
+    "false_reject_rate": 0.3077,
+    "false_accept_rate": 0.6667,
+    "silent_error": 2,
+    "relevance_top1_median": 0.9093
+  },
+  "rows": [
+    {
+      "category": "字面",
+      "query": "TCP 三次握手的 SYN 和 ACK 标志位分别起什么作用",
+      "gold": [
+        1,
+        2
+      ],
+      "top": [
+        {
+          "chunk_id": 2,
+          "heading": "第3章 传输层 > 3.2 TCP 连接管理 > 3.2.2 为什么是三次而不是两次",
+          "score": 1.0,
+          "relevance": 0.7959,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1,
+          "heading": "第3章 传输层 > 3.1 传输层概述",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 5,
+          "heading": "第4章 网络层 > 4.1 网络层功能",
+          "score": 0.9611,
+          "relevance": 0.1203,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 0.7959,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true
+    },
+    {
+      "category": "字面",
+      "query": "慢开始门限 ssthresh 是怎么变化的",
+      "gold": [
+        3
+      ],
+      "top": [
+        {
+          "chunk_id": 3,
+          "heading": "第3章 传输层 > 3.3 TCP 可靠传输与流量控制",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 4,
+          "heading": "第3章 传输层 > 3.5 UDP 与适用场景",
+          "score": 0.9761,
+          "relevance": 0.5343,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 6,
+          "heading": "第4章 网络层 > 4.4 路由选择协议",
+          "score": 0.9394,
+          "relevance": 0.0819,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 1.0,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true
+    },
+    {
+      "category": "字面",
+      "query": "滑动窗口 rwnd 如何实现流量控制",
+      "gold": [
+        3
+      ],
+      "top": [
+        {
+          "chunk_id": 3,
+          "heading": "第3章 传输层 > 3.3 TCP 可靠传输与流量控制",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 2,
+          "heading": "第3章 传输层 > 3.2 TCP 连接管理 > 3.2.2 为什么是三次而不是两次",
+          "score": 0.9761,
+          "relevance": 0.1409,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 4,
+          "heading": "第3章 传输层 > 3.5 UDP 与适用场景",
+          "score": 0.9685,
+          "relevance": 0.064,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 1.0,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true
+    },
+    {
+      "category": "字面",
+      "query": "RIP 与 OSPF 的区别是什么",
+      "gold": [
+        6
+      ],
+      "top": [
+        {
+          "chunk_id": 2,
+          "heading": "第3章 传输层 > 3.2 TCP 连接管理 > 3.2.2 为什么是三次而不是两次",
+          "score": 1.0,
+          "relevance": 0.2797,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 6,
+          "heading": "第4章 网络层 > 4.4 路由选择协议",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1,
+          "heading": "第3章 传输层 > 3.1 传输层概述",
+          "score": 0.9611,
+          "relevance": 0.1851,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 0.2797,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": true
+    },
+    {
+      "category": "字面",
+      "query": "NAT 与 NAPT 的作用",
+      "gold": [
+        6
+      ],
+      "top": [
+        {
+          "chunk_id": 6,
+          "heading": "第4章 网络层 > 4.4 路由选择协议",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 2,
+          "heading": "第3章 传输层 > 3.2 TCP 连接管理 > 3.2.2 为什么是三次而不是两次",
+          "score": 0.9839,
+          "relevance": 0.2249,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 3,
+          "heading": "第3章 传输层 > 3.3 TCP 可靠传输与流量控制",
+          "score": 0.9534,
+          "relevance": 0.2154,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 1.0,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true
+    },
+    {
+      "category": "字面",
+      "query": "DES 和 AES 属于对称加密算法吗",
+      "gold": [
+        7
+      ],
+      "top": [
+        {
+          "chunk_id": 7,
+          "heading": "第5章 网络安全 > 5.1 对称加密与非对称加密",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 6,
+          "heading": "第4章 网络层 > 4.4 路由选择协议",
+          "score": 0.9612,
+          "relevance": 0.0761,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 3,
+          "heading": "第3章 传输层 > 3.3 TCP 可靠传输与流量控制",
+          "score": 0.9462,
+          "relevance": 0.0442,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 1.0,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true
+    },
+    {
+      "category": "口语",
+      "query": "两台主机开始对话之前为什么要先对暗号",
+      "gold": [
+        1,
+        2
+      ],
+      "top": [
+        {
+          "chunk_id": 1,
+          "heading": "第3章 传输层 > 3.1 传输层概述",
+          "score": 1.0,
+          "relevance": 0.8185,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 2,
+          "heading": "第3章 传输层 > 3.2 TCP 连接管理 > 3.2.2 为什么是三次而不是两次",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 4,
+          "heading": "第3章 传输层 > 3.5 UDP 与适用场景",
+          "score": 0.9535,
+          "relevance": 0.4627,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 0.8185,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true
+    },
+    {
+      "category": "口语",
+      "query": "网络为什么会堵车",
+      "gold": [
+        3
+      ],
+      "top": [
+        {
+          "chunk_id": 2,
+          "heading": "第3章 传输层 > 3.2 TCP 连接管理 > 3.2.2 为什么是三次而不是两次",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 6,
+          "heading": "第4章 网络层 > 4.4 路由选择协议",
+          "score": 0.9685,
+          "relevance": 0.1174,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1,
+          "heading": "第3章 传输层 > 3.1 传输层概述",
+          "score": 0.9612,
+          "relevance": 0.4431,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 1.0,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false
+    },
+    {
+      "category": "口语",
+      "query": "接收方处理不过来数据怎么办",
+      "gold": [
+        3
+      ],
+      "top": [
+        {
+          "chunk_id": 1,
+          "heading": "第3章 传输层 > 3.1 传输层概述",
+          "score": 1.0,
+          "relevance": 0.3974,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 3,
+          "heading": "第3章 传输层 > 3.3 TCP 可靠传输与流量控制",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 2,
+          "heading": "第3章 传输层 > 3.2 TCP 连接管理 > 3.2.2 为什么是三次而不是两次",
+          "score": 0.9685,
+          "relevance": 0.2886,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 0.3974,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true
+    },
+    {
+      "category": "口语",
+      "query": "地址不够用，怎么让很多机器共用一个公网地址",
+      "gold": [
+        6
+      ],
+      "top": [
+        {
+          "chunk_id": 6,
+          "heading": "第4章 网络层 > 4.4 路由选择协议",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 7,
+          "heading": "第5章 网络安全 > 5.1 对称加密与非对称加密",
+          "score": 0.9761,
+          "relevance": 0.3699,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 5,
+          "heading": "第4章 网络层 > 4.1 网络层功能",
+          "score": 0.9685,
+          "relevance": 0.3829,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 1.0,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true
+    },
+    {
+      "category": "口语",
+      "query": "怎么证明一份文件确实是某人发出的",
+      "gold": [
+        7
+      ],
+      "top": [
+        {
+          "chunk_id": 4,
+          "heading": "第3章 传输层 > 3.5 UDP 与适用场景",
+          "score": 1.0,
+          "relevance": 0.1189,
+          "coverage": 0.0,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 2,
+          "heading": "第3章 传输层 > 3.2 TCP 连接管理 > 3.2.2 为什么是三次而不是两次",
+          "score": 0.9839,
+          "relevance": 0.0861,
+          "coverage": 0.0,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 3,
+          "heading": "第3章 传输层 > 3.3 TCP 可靠传输与流量控制",
+          "score": 0.9683,
+          "relevance": 0.0719,
+          "coverage": 0.0,
+          "source": "dense"
+        }
+      ],
+      "relevance_top1": 0.1189,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": false
+    },
+    {
+      "category": "跨语言",
+      "query": "three-way handshake",
+      "gold": [
+        1,
+        2
+      ],
+      "top": [
+        {
+          "chunk_id": 4,
+          "heading": "第3章 传输层 > 3.5 UDP 与适用场景",
+          "score": 1.0,
+          "relevance": 0.017,
+          "coverage": 0.0,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 8,
+          "heading": "第4章 应用层 > 4.1 DNS 域名系统",
+          "score": 0.9839,
+          "relevance": 0.0124,
+          "coverage": 0.0,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 5,
+          "heading": "第4章 网络层 > 4.1 网络层功能",
+          "score": 0.9683,
+          "relevance": 0.0,
+          "coverage": 0.0,
+          "source": "dense"
+        }
+      ],
+      "relevance_top1": 0.017,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": false
+    },
+    {
+      "category": "跨语言",
+      "query": "congestion control and slow start",
+      "gold": [
+        3
+      ],
+      "top": [
+        {
+          "chunk_id": 6,
+          "heading": "第4章 网络层 > 4.4 路由选择协议",
+          "score": 1.0,
+          "relevance": 0.0271,
+          "coverage": 0.0,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 3,
+          "heading": "第3章 传输层 > 3.3 TCP 可靠传输与流量控制",
+          "score": 0.9839,
+          "relevance": 0.0226,
+          "coverage": 0.0,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 7,
+          "heading": "第5章 网络安全 > 5.1 对称加密与非对称加密",
+          "score": 0.9683,
+          "relevance": 0.0214,
+          "coverage": 0.0,
+          "source": "dense"
+        }
+      ],
+      "relevance_top1": 0.0271,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": true
+    },
+    {
+      "category": "领域外",
+      "query": "数据库 B+ 树索引的分裂过程",
+      "gold": [],
+      "top": [
+        {
+          "chunk_id": 8,
+          "heading": "第4章 应用层 > 4.1 DNS 域名系统",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 5,
+          "heading": "第4章 网络层 > 4.1 网络层功能",
+          "score": 0.9839,
+          "relevance": 0.5797,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 4,
+          "heading": "第3章 传输层 > 3.5 UDP 与适用场景",
+          "score": 0.9607,
+          "relevance": 0.097,
+          "coverage": 0.0,
+          "source": "both"
+        }
+      ],
+      "relevance_top1": 1.0,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false
+    },
+    {
+      "category": "领域外",
+      "query": "红烧肉的正宗做法",
+      "gold": [],
+      "top": [
+        {
+          "chunk_id": 4,
+          "heading": "第3章 传输层 > 3.5 UDP 与适用场景",
+          "score": 1.0,
+          "relevance": 0.0643,
+          "coverage": 0.0,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 8,
+          "heading": "第4章 应用层 > 4.1 DNS 域名系统",
+          "score": 0.9839,
+          "relevance": 0.064,
+          "coverage": 0.0,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 5,
+          "heading": "第4章 网络层 > 4.1 网络层功能",
+          "score": 0.9683,
+          "relevance": 0.0599,
+          "coverage": 0.0,
+          "source": "dense"
+        }
+      ],
+      "relevance_top1": 0.0643,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": false
+    },
+    {
+      "category": "领域外",
+      "query": "矩阵特征值分解的几何意义",
+      "gold": [],
+      "top": [
+        {
+          "chunk_id": 7,
+          "heading": "第5章 网络安全 > 5.1 对称加密与非对称加密",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 0.0,
+          "source": "both"
+        },
+        {
+          "chunk_id": 6,
+          "heading": "第4章 网络层 > 4.4 路由选择协议",
+          "score": 0.5041,
+          "relevance": 0.0763,
+          "coverage": 0.0,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 8,
+          "heading": "第4章 应用层 > 4.1 DNS 域名系统",
+          "score": 0.4881,
+          "relevance": 0.0441,
+          "coverage": 0.0,
+          "source": "dense"
+        }
+      ],
+      "relevance_top1": 1.0,
+      "coverage_top1": 0.0,
+      "unknown_ratio": null,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false
+    }
+  ]
+}
