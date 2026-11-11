@@ -113,10 +113,23 @@ async def retrieve_node(state: dict[str, Any]) -> dict[str, Any]:
                 if prev is None or hit.relevance > prev.relevance:
                     best[hit.chunk_id] = hit
         ordered = sorted(best.values(), key=lambda c: -c.relevance)[:5]
-        if not ordered or ordered[0].relevance < settings.MIN_RETRIEVE_SCORE:
+        top = ordered[0] if ordered else None
+        # 双重门禁：相关度太低 → 依据不足；查询词大多不在语料里"且"相关度也低 → 考纲外提问。
+        # 必须联判：多语言向量模型能让英文提问正确命中中文语料，只按词表否决会误杀。
+        off_syllabus = (
+            top is not None
+            and top.unknown_ratio >= settings.MAX_UNKNOWN_TERM_RATIO
+            and top.relevance < settings.OFF_SYLLABUS_RELEVANCE_FLOOR
+        )
+        if top is None or top.relevance < settings.MIN_RETRIEVE_SCORE or off_syllabus:
+            reason = (
+                f"约 {top.unknown_ratio:.0%} 的查询词在课件中不存在且相关度仅 {top.relevance:.2f}，"
+                "判为考纲外"
+                if off_syllabus and top is not None
+                else f"最高相关度 {(top.relevance if top else 0):.2f}"
+            )
             warnings.append(
-                f"知识点「{spec['name']}」在知识库中检索不到足够依据（"
-                f"最高相关度 {(ordered[0].relevance if ordered else 0):.2f}），已跳过"
+                f"知识点「{spec['name']}」在知识库中检索不到足够依据（{reason}），已跳过"
             )
             continue
         ctx.remember(ordered)

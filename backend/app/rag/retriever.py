@@ -34,6 +34,10 @@ class RetrievedChunk:
     document_id: int | None = None
     document_name: str | None = None
     document_deleted: bool = False
+    # 查询词在该 chunk 中的覆盖率（0~1），用于判断"答非所问"
+    coverage: float = 0.0
+    # 查询有效词中不在本课程语料里的占比（0~1），用于判断"考纲外提问"
+    unknown_ratio: float = 0.0
     meta: dict[str, Any] = field(default_factory=dict)
 
     def to_ref(self, quote: str | None = None) -> dict[str, Any]:
@@ -54,6 +58,8 @@ class RetrievedChunk:
             "content": self.content,
             "score": round(self.score, 4),
             "relevance": round(self.relevance, 4),
+            "coverage": round(self.coverage, 4),
+            "unknown_ratio": round(self.unknown_ratio, 4),
             "source": self.source,
             "page_no": self.page_no,
             "slide_no": self.slide_no,
@@ -147,10 +153,19 @@ async def retrieve(
     index = await bm25_index.get_index(session, course_id)
     sparse_hits = index.search(query, top_k=candidates)
     sparse_ids = [cid for cid, score in sparse_hits if score > 0]
-    sparse_norm: dict[int, float] = {}
-    if sparse_hits:
-        max_sparse = max((s for _, s in sparse_hits), default=0.0) or 1.0
-        sparse_norm = {cid: score / max_sparse for cid, score in sparse_hits}
+    # BM25 原始分没有上界。早期实现用「分数 / 本次最高分」归一，导致 top1 恒等于 1.0，
+    # relevance 因此失去绝对尺度，MIN_RETRIEVE_SCORE 实际永不触发。
+    # 改为饱和变换 raw/(raw+K)：单调有界，同时保留"这条命中到底有多强"的绝对信息。
+    sparse_norm: dict[int, float] = {
+        cid: score / (score + settings.BM25_SATURATION_K)
+        for cid, score in sparse_hits
+        if score > 0
+    }
+
+    # 查询词级信号：哪些词根本不在本课程语料里（考纲外判定），以及 top chunk 覆盖了几个词
+    terms = bm25_index.tokenize(query)
+    known_terms = [t for t in terms if t in index.vocab]
+    unknown_ratio = 1.0 - (len(known_terms) / len(terms)) if terms else 1.0
 
     if not dense_ids and not sparse_ids:
         return []
@@ -174,7 +189,13 @@ async def retrieve(
         sparse_set = cid in sparse_norm
         chunk.source = "both" if dense_set and sparse_set else ("dense" if dense_set else "sparse")
         chunk.score = round(rrf_map.get(cid, 0.0) / max_rrf, 4)
-        chunk.relevance = round(max(dense_score.get(cid, 0.0), sparse_norm.get(cid, 0.0)), 4)
+        chunk.coverage = round(index.coverage(terms, cid), 4)
+        chunk.unknown_ratio = round(unknown_ratio, 4)
+        # 三路信号取最大：向量语义分、BM25 饱和分、查询词覆盖率。
+        # 覆盖率是纯词面量纲（0~1），能兜住"BM25 分数被饱和压缩到阈值以下"的误拒。
+        chunk.relevance = round(
+            max(dense_score.get(cid, 0.0), sparse_norm.get(cid, 0.0), chunk.coverage), 4
+        )
         results.append(chunk)
 
     if expand and results:

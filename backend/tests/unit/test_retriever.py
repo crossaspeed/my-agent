@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from app.rag.bm25_index import tokenize
 from app.rag.retriever import rrf_fuse
 
@@ -51,3 +53,28 @@ def test_build_kp_specs_distribution():
     total = sum(s["count"] for s in specs)
     assert total == 4
     assert {s["kp_id"] for s in specs} == {1, 2}
+
+
+def test_bm25_saturating_normalization_is_bounded():
+    """BM25 归一化必须单调有界，且不能像旧实现那样让 top1 恒为 1。"""
+    from app.core.config import settings
+
+    k = settings.BM25_SATURATION_K
+    low, high = 3.0 / (3.0 + k), 9.0 / (9.0 + k)
+    assert 0 < low < high < 1.0
+    # 旧实现：3/9 与 9/9 → 0.33 与 1.0；新实现明显更平缓，且保留了绝对量级差
+    assert high - low < 0.5
+
+
+def test_course_bm25_vocab_and_coverage():
+    from app.rag.bm25_index import CourseBM25
+
+    index = CourseBM25(
+        [1, 2],
+        [["tcp", "三次", "握手"], ["dns", "域名", "解析"]],
+    )
+    assert "握手" in index.vocab and "域名" in index.vocab
+    terms = ["三次", "握手", "拥塞"]
+    assert index.coverage(terms, 1) == pytest.approx(2 / 3)
+    assert index.coverage(terms, 2) == 0.0
+    assert index.coverage([], 1) == 0.0

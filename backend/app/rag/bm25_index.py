@@ -47,6 +47,37 @@ class CourseBM25:
         self.corpus = corpus
         self._bm25 = BM25Okapi(corpus) if corpus else None
         self.built_at = time.time()
+        self._token_sets: dict[int, set[str]] | None = None
+        self._vocab: set[str] | None = None
+
+    @property
+    def token_sets(self) -> dict[int, set[str]]:
+        """chunk_id → 词集合，用于计算查询词覆盖情况（惰性构建）。"""
+        if self._token_sets is None:
+            self._token_sets = {
+                cid: set(tokens) for cid, tokens in zip(self.chunk_ids, self.corpus, strict=False)
+            }
+        return self._token_sets
+
+    @property
+    def vocab(self) -> set[str]:
+        """本课程语料的全部词项，用于判断查询词是否"考纲外"（惰性构建）。"""
+        if self._vocab is None:
+            vocab: set[str] = set()
+            for tokens in self.corpus:
+                vocab.update(tokens)
+            self._vocab = vocab
+        return self._vocab
+
+    def coverage(self, terms: list[str], chunk_id: int) -> float:
+        """查询词在该 chunk 中的覆盖率（0~1）：衡量"检索到的片段到底讲了多少我问的东西"。"""
+        if not terms:
+            return 0.0
+        tokens = self.token_sets.get(chunk_id)
+        if not tokens:
+            return 0.0
+        hit = sum(1 for term in terms if term in tokens)
+        return hit / len(terms)
 
     def search(self, query: str, top_k: int = 20) -> list[tuple[int, float]]:
         if self._bm25 is None:

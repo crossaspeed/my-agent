@@ -87,6 +87,13 @@ class Settings(BaseSettings):
     RETRIEVE_CANDIDATES: int = 20
     RRF_K: int = 60
     MIN_RETRIEVE_SCORE: float = 0.35
+    # BM25 原始分无上界，用饱和度 K 做有界归一：raw/(raw+K)，避免"除以最大值"导致 top1 恒为 1
+    BM25_SATURATION_K: float = 6.0
+    # 查询有效词中"课程语料里从未出现"的占比超过该值 → 视为可能考纲外（需配合相关度判定）
+    # 注意：多语言模型（bge-m3）能处理英文提问，仅凭词表会误杀，故必须与相关度联判
+    MAX_UNKNOWN_TERM_RATIO: float = 0.5
+    # 判为考纲外的相关度上限：未登录词多 且 最强证据相关度也低于此值 → 拒答
+    OFF_SYLLABUS_RELEVANCE_FLOOR: float = 0.5
     CITATION_FUZZY_THRESHOLD: float = 0.85
     ENABLE_RERANK: bool = False
 

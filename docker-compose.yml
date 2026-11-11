@@ -58,6 +58,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        # 默认带上 embedding（bge-m3 需要 torch + sentence-transformers）；
+        # 只想跑最简部署时：BACKEND_EXTRAS=postgres,queue docker compose build
+        EXTRAS: ${BACKEND_EXTRAS:-postgres,queue,embedding}
     command:
       - sh
       - -c
@@ -80,6 +84,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        # 默认带上 embedding（bge-m3 需要 torch + sentence-transformers）；
+        # 只想跑最简部署时：BACKEND_EXTRAS=postgres,queue docker compose build
+        EXTRAS: ${BACKEND_EXTRAS:-postgres,queue,embedding}
     command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]
     env_file: .env
     environment:
@@ -95,6 +103,7 @@ services:
     volumes:
       - ./data/uploads:/data/uploads
       - ./data/vectors:/data/vectors
+      - ./data/models:/models
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -103,6 +112,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        # 默认带上 embedding（bge-m3 需要 torch + sentence-transformers）；
+        # 只想跑最简部署时：BACKEND_EXTRAS=postgres,queue docker compose build
+        EXTRAS: ${BACKEND_EXTRAS:-postgres,queue,embedding}
     command: ["celery", "-A", "app.workers.celery_app:celery_app", "worker", "-Q", "io", "-c", "2", "--loglevel=INFO"]
     env_file: .env
     environment:
@@ -116,6 +129,7 @@ services:
     volumes:
       - ./data/uploads:/data/uploads
       - ./data/vectors:/data/vectors
+      - ./data/models:/models
     healthcheck:
       test: ["CMD-SHELL", "celery -A app.workers.celery_app:celery_app inspect ping -d celery@$$HOSTNAME || exit 1"]
       interval: 30s
@@ -128,6 +142,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        # 默认带上 embedding（bge-m3 需要 torch + sentence-transformers）；
+        # 只想跑最简部署时：BACKEND_EXTRAS=postgres,queue docker compose build
+        EXTRAS: ${BACKEND_EXTRAS:-postgres,queue,embedding}
     command: ["celery", "-A", "app.workers.celery_app:celery_app", "worker", "-Q", "llm,default", "-c", "4", "--loglevel=INFO"]
     env_file: .env
     environment:
@@ -141,6 +159,7 @@ services:
     volumes:
       - ./data/uploads:/data/uploads
       - ./data/vectors:/data/vectors
+      - ./data/models:/models
     healthcheck:
       test: ["CMD-SHELL", "celery -A app.workers.celery_app:celery_app inspect ping -d celery@$$HOSTNAME || exit 1"]
       interval: 30s
