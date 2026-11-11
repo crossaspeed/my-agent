@@ -122,6 +122,19 @@ docker compose exec api python -m app.cli reindex --course-id 1
 > 镜像默认带 embedding 依赖（约 2.7GB，含 CPU 版 torch）。不需要语义检索时用
 > `BACKEND_EXTRAS=postgres,queue docker compose build` 可回到 1GB 左右。
 
+**可选：开启两阶段重排**（在语义检索之上再加一层精排）
+
+```ini
+# .env
+RERANK_BACKEND=llm      # 复用 LLM_API_KEY，无需下载模型；实测 Hit@1 69.2% → 100%
+# RERANK_BACKEND=cross  # 本地交叉编码器，需先下载 2.27GB 权重；本语料实测无增益
+```
+
+```bash
+docker compose up -d api worker-io worker-llm   # 配完重启生效，不需要重建镜像
+```
+
+
 
 
 ### 3.2 方式二：本机直跑（无需 Docker，默认零依赖）
@@ -232,6 +245,7 @@ cd frontend && npm run build               # tsc + vite build 通过
 | 向量库 | Qdrant / Chroma | 本地 JSON + numpy（余弦） | 未安装 `vector` 额外依赖或配置为 local |
 | Embedding | 本地 BGE-M3（`local`）/ OpenAI 兼容 API（`api`） | 字符 n-gram 哈希向量（确定性、无网络） | 未装 `embedding` 依赖或未配置 key（会打印 `embedder_fallback`） |
 | LLM | deepseek/qwen/glm/OpenAI | Mock LLM（按场景生成结构化结果，引用真实 chunk） | `LLM_PROVIDER=mock` 或熔断 |
+| 重排 | 交叉编码器 `cross` / LLM listwise `llm` | 跳过重排（仅 RRF 顺序） | `RERANK_BACKEND=off`、模型缺失或调用失败 |
 | 任务队列 | Celery + Redis | 进程内线程池 | `USE_CELERY=false` 或 redis 不可达 |
 | 缓存/限流 | Redis | 进程内 LRU + 滑动窗口 | 同上 |
 
@@ -299,6 +313,8 @@ make build       # 前端生产构建
 | `DATABASE_URL` | `sqlite+aiosqlite:///...` 或 `postgresql+asyncpg://...` | sqlite |
 | `LLM_PROVIDER` / `LLM_API_KEY` / `LLM_MODEL` | 模型提供方与密钥 | `mock` |
 | `EMBEDDING_PROVIDER` | `hash` / `api` / `local` | `hash` |
+| `RERANK_BACKEND` | `off` / `cross` / `llm` | `off` |
+| `RERANK_CANDIDATES` | 进入重排的候选数 | `20`（CPU 约 1.25s） |
 | `VECTOR_BACKEND` | `local` / `chroma` / `qdrant` | `local` |
 | `USE_CELERY` | 是否使用 Celery 队列 | `false` |
 | `AUTO_CREATE_TABLES` | 启动时自动建表（仅开发；生产用 alembic） | `true` |
@@ -313,7 +329,8 @@ make build       # 前端生产构建
 - 演示知识库仅 4 份 markdown 课件（8 个分块），检索指标只能说明流程正确，不足以支撑规模结论；换真实课件后需重跑 `make eval` 与 `scripts/retrieval_bench.py`
 - PDF 扫描页未接入 OCR（仅记录 `ocr_pages`，提示人工补录）
 - `.env.example` 默认仍为 `hash`（保证克隆即跑、不下载 2GB 模型）；**要真实语义检索**请切 `EMBEDDING_PROVIDER=local`（BGE-M3）或 `api`，切换后必须 `reindex`
-- 检索门禁按「未登录词率 + 相关度」双条件判定，仍无法拦住"部分术语命中"的领域外提问（如用含"数据库"的 DNS 段落回答 B+ 树问题）；`use_rerank` 目前是**声明但未实现**的参数
+- 检索门禁按「未登录词率 + 相关度」双条件判定，仍无法拦住"部分术语命中"的领域外提问（如用含"数据库"的 DNS 段落回答 B+ 树问题）
+- 两阶段重排已实现（`RERANK_BACKEND=off|cross|llm`）。实测**同源交叉编码器 bge-reranker 在本语料零增益**（分数压在 0.5），LLM listwise 重排把 Hit@1 从 69.2% 拉到 100%，代价 1.2s / 2.2k tokens per 次，故导学（SSE）默认不开
 - 升级过程与量化收益见 [`docs/experiments/retrieval-upgrade.md`](docs/experiments/retrieval-upgrade.md)（Hit@1 53.8%→69.2%，Hit@3 76.9%→100%）
 - 主观题评分依赖 LLM 质量，低置信结果转人工（`needs_human`），系统不做「自动放行」
 - 前端未做 SSR 与移动端深度适配（测评页已按栅格自适应）
