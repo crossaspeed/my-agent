@@ -167,6 +167,20 @@
 18. **考纲外门禁必须与相关度联判**
     最初只用"查询词未登录率 ≥0.75"否决，实测把 `three-way handshake`、`congestion control` 两条英文提问误杀（BGE-M3 本来已正确命中中文语料）。改为「未登录率 ≥0.5 **且** 相关度 <0.5」双条件后，跨语言提问正确放行，越界提问误纳率 66.7%→33.3%。
 
+19. **后台任务跨事件循环复用数据库连接（解析 PPTX 失败的真实原因）**
+    现象：一次上传 4 个 PPTX，前两个解析成功（21 / 29 分块），后两个失败，job 记录
+    `Task <Task pending ... run_job() ...> got Future ... attached to a different loop`。
+    根因：Celery（prefork）与线程池的执行方式都是「一个任务一次 `asyncio.run`」，每次新建事件循环；
+    而任务入口用的是全局 `AsyncSessionLocal`，asyncpg 连接在创建时已绑定旧循环，复用即报错——
+    所以同一子进程的**第一个任务成功、之后全挂**。同类隐患还有两处：全局 LLM 客户端内的
+    `asyncio.Semaphore` 绑定首次使用的循环；`llm_calls` 审计用全局引擎，失败后被 except 吞掉，
+    导致审计静默丢数据。
+    修复：新增 `db/base.py: task_session()`（每任务新建引擎 + NullPool + 用完 dispose），
+    解析/出题/阅卷/重建索引（含并发的 `_grade_one`）统一改用；`get_llm_client()` 改为按事件循环
+    缓存（WeakKeyDictionary）；审计改用 `task_session(busy_timeout=300)`。
+    说明：该缺陷**只在 Celery + PostgreSQL 下出现**，本地 sqlite + 线程池的单测无法复现——
+    这也是"必须有真机集成验证"的又一个例证。
+
 ---
 
 ## 已知技术债
