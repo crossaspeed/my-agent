@@ -9,7 +9,7 @@ from typing import Any
 
 import jieba
 from rank_bm25 import BM25Okapi
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.logging import get_logger
@@ -42,9 +42,16 @@ def tokenize(text: str) -> list[str]:
 class CourseBM25:
     """单门课程的 BM25 索引。"""
 
-    def __init__(self, chunk_ids: list[int], corpus: list[list[str]]) -> None:
+    def __init__(
+        self,
+        chunk_ids: list[int],
+        corpus: list[list[str]],
+        signature: tuple[int, int] | None = None,
+    ) -> None:
         self.chunk_ids = chunk_ids
         self.corpus = corpus
+        # (分块数, 最大分块 id)：用于跨进程感知语料变化（解析任务在别的进程写库）
+        self.signature = signature
         self._bm25 = BM25Okapi(corpus) if corpus else None
         self.built_at = time.time()
         self._token_sets: dict[int, set[str]] | None = None
@@ -109,17 +116,32 @@ def invalidate(course_id: int | None = None) -> None:
             _cache.pop(course_id, None)
 
 
+async def _corpus_signature(session: AsyncSession, course_id: int) -> tuple[int, int]:
+    row = (
+        await session.execute(
+            select(func.count(DocumentChunk.id), func.max(DocumentChunk.id)).where(
+                DocumentChunk.course_id == course_id
+            )
+        )
+    ).one()
+    return int(row[0] or 0), int(row[1] or 0)
+
+
 async def get_index(session: AsyncSession, course_id: int, force: bool = False) -> CourseBM25:
     with _lock:
         cached = _cache.get(course_id)
-        if (
-            cached
-            and not force
-            and course_id not in _dirty
-            and time.time() - cached.built_at < _INDEX_TTL
-        ):
+    # 缓存命中还要校验语料签名：课件由 worker 进程解析入库，API 进程的索引若不校验
+    # 会一直用旧语料，表现为"刚上传的课件搜不到"（最多滞后 _INDEX_TTL 秒）
+    if (
+        cached
+        and not force
+        and course_id not in _dirty
+        and time.time() - cached.built_at < _INDEX_TTL
+        and cached.signature == await _corpus_signature(session, course_id)
+    ):
+        with _lock:
             _cache.move_to_end(course_id)
-            return cached
+        return cached
 
     rows = await session.execute(
         select(DocumentChunk.id, DocumentChunk.content).where(DocumentChunk.course_id == course_id)
@@ -130,7 +152,7 @@ async def get_index(session: AsyncSession, course_id: int, force: bool = False) 
         chunk_ids.append(int(chunk_id))
         corpus.append(tokenize(content))
 
-    index = CourseBM25(chunk_ids, corpus)
+    index = CourseBM25(chunk_ids, corpus, signature=(len(chunk_ids), max(chunk_ids, default=0)))
     with _lock:
         _cache[course_id] = index
         _cache.move_to_end(course_id)
