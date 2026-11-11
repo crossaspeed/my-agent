@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.pool import NullPool
 
 from app.core.config import settings
 
@@ -57,24 +59,64 @@ def _engine_kwargs() -> dict[str, Any]:
     }
 
 
+def _attach_sqlite_pragmas(target: AsyncEngine, busy_timeout: int) -> None:
+    """SQLite 连接级 PRAGMA；PG 下无需处理。"""
+    if not settings.is_sqlite:
+        return
+
+    from sqlalchemy import event
+
+    @event.listens_for(target.sync_engine, "connect")
+    def _pragmas(dbapi_connection, _record):  # type: ignore[no-untyped-def]
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute(f"PRAGMA busy_timeout={busy_timeout}")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.close()
+
+
+def _new_isolated_engine(busy_timeout: int = 8000) -> AsyncEngine:
+    """一次性引擎：NullPool 不保留连接，用完即销毁。"""
+    isolated = create_async_engine(
+        normalize_sqlite_url(settings.DATABASE_URL),
+        echo=settings.DB_ECHO,
+        future=True,
+        poolclass=NullPool,
+        connect_args={"check_same_thread": False} if settings.is_sqlite else {},
+    )
+    _attach_sqlite_pragmas(isolated, busy_timeout=busy_timeout)
+    return isolated
+
+
+@asynccontextmanager
+async def task_session(busy_timeout: int = 8000) -> AsyncIterator[AsyncSession]:
+    """后台任务 / 一次性写入专用会话。
+
+    为什么不能复用全局 `AsyncSessionLocal`：
+    Celery（prefork）与进程内线程池的执行方式都是「一个任务一次 asyncio.run」，
+    每次都会**新建事件循环**；而 asyncpg 连接在创建时就绑定了当时的事件循环，
+    复用全局连接池会抛 `Future attached to a different loop`（表现为课件解析失败、
+    llm_calls 审计静默丢数据）。
+
+    这里每个任务新建独立引擎、使用 NullPool、结束即 dispose：
+    连接不跨任务存活，也就不存在跨循环复用。
+    """
+    isolated = _new_isolated_engine(busy_timeout)
+    try:
+        maker = async_sessionmaker(isolated, expire_on_commit=False, class_=AsyncSession)
+        async with maker() as session:
+            yield session
+    finally:
+        await isolated.dispose()
+
+
 engine: AsyncEngine = create_async_engine(
     normalize_sqlite_url(settings.DATABASE_URL),
     echo=settings.DB_ECHO,
     future=True,
     **_engine_kwargs(),
 )
-
-if settings.is_sqlite:
-    from sqlalchemy import event
-
-    @event.listens_for(engine.sync_engine, "connect")
-    def _sqlite_pragmas(dbapi_connection, _record):  # type: ignore[no-untyped-def]
-        """WAL + busy_timeout：允许「一个写 + 多个读」并发，避免后台任务写审计表时锁库。"""
-        cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA journal_mode=WAL")
-        cursor.execute("PRAGMA busy_timeout=8000")
-        cursor.execute("PRAGMA synchronous=NORMAL")
-        cursor.close()
+_attach_sqlite_pragmas(engine, busy_timeout=8000)
 
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
@@ -83,15 +125,7 @@ AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False, class_=As
 _audit_engine: AsyncEngine = create_async_engine(
     normalize_sqlite_url(settings.DATABASE_URL), echo=False, future=True, **_engine_kwargs()
 )
-if settings.is_sqlite:
-    from sqlalchemy import event
-
-    @event.listens_for(_audit_engine.sync_engine, "connect")
-    def _audit_pragmas(dbapi_connection, _record):  # type: ignore[no-untyped-def]
-        cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA journal_mode=WAL")
-        cursor.execute("PRAGMA busy_timeout=300")
-        cursor.close()
+_attach_sqlite_pragmas(_audit_engine, busy_timeout=300)
 
 AuditSessionLocal = async_sessionmaker(_audit_engine, expire_on_commit=False, class_=AsyncSession)
 

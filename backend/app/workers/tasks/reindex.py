@@ -8,7 +8,7 @@ from sqlalchemy import select
 
 from app.core.config import settings
 from app.core.logging import get_logger
-from app.db.base import AsyncSessionLocal
+from app.db.base import task_session
 from app.db.models import Document, DocumentChunk
 from app.rag import bm25_index
 from app.rag.embedder import get_embedder
@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 async def reindex_course_task(payload: dict[str, Any]) -> None:
     task_id = payload.get("task_id")
     course_id = payload.get("course_id")
-    async with AsyncSessionLocal() as session:
+    async with task_session() as session:
         try:
             if task_id:
                 await job_service.update(

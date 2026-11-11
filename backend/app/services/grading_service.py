@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.orchestrator import orchestrator
 from app.core.logging import get_logger
-from app.db.base import AsyncSessionLocal
+from app.db.base import task_session
 from app.db.models import Answer, Attempt, Paper, PaperQuestion, Question
 from app.services import job_service
 from app.workers.registry import register
@@ -35,7 +35,7 @@ async def _grade_one(
     value: Any,
     max_score: float,
 ) -> dict[str, Any]:
-    async with AsyncSessionLocal() as session:
+    async with task_session() as session:
         try:
             return await orchestrator.grade_answer(
                 session=session,
@@ -172,7 +172,7 @@ async def grade_attempt(session: AsyncSession, attempt_id: int, task_id: str | N
 async def grade_attempt_task(payload: dict[str, Any]) -> None:
     task_id = payload["task_id"]
     attempt_id = int(payload["attempt_id"])
-    async with AsyncSessionLocal() as session:
+    async with task_session() as session:
         try:
             await grade_attempt(session, attempt_id, task_id)
         except Exception as exc:

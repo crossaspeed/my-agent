@@ -8,6 +8,7 @@ from __future__ import annotations
 import asyncio
 import json
 import time
+import weakref
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -295,10 +296,11 @@ class LLMClient:
     async def _audit(self, result: LLMResult) -> None:
         """写 llm_calls 表（论文性能数据来源）。使用独立短超时连接池，失败不影响主流程。"""
         try:
-            from app.db.base import AuditSessionLocal
+            from app.db.base import task_session
             from app.db.models import LLMCall
 
-            async with AuditSessionLocal() as session:
+            # 用隔离会话：审计可能发生在后台任务的新事件循环里，复用全局引擎会跨循环失败
+            async with task_session(busy_timeout=300) as session:
                 session.add(
                     LLMCall(
                         scene=result.scene,
@@ -352,8 +354,27 @@ def parse_json(text: str) -> dict[str, Any]:
 _client: LLMClient | None = None
 
 
+_clients: weakref.WeakKeyDictionary[Any, LLMClient] = weakref.WeakKeyDictionary()
+
+
 def get_llm_client() -> LLMClient:
+    """按事件循环缓存客户端。
+
+    客户端持有 `asyncio.Semaphore`，它绑定在首次使用的事件循环上；Celery 每个任务
+    都是一次新的 `asyncio.run`，跨循环复用同一个客户端会抛
+    `Future attached to a different loop`。API 进程内则始终命中同一个循环。
+    """
     global _client
-    if _client is None:
-        _client = LLMClient()
-    return _client
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+    if loop is None:  # 同步上下文（如 CLI 装配阶段）
+        if _client is None:
+            _client = LLMClient()
+        return _client
+    client = _clients.get(loop)
+    if client is None:
+        client = LLMClient()
+        _clients[loop] = client
+    return client

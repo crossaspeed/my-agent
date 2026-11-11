@@ -14,7 +14,7 @@ from app.core.config import settings
 from app.core.exceptions import BadRequest, Forbidden, KnowledgeNotCovered, NotFound
 from app.core.logging import get_logger
 from app.core.ratelimit import check_rate_limit
-from app.db.base import AsyncSessionLocal
+from app.db.base import task_session
 from app.db.models import Answer, Attempt, Document, DocumentChunk, Question, User
 from app.rag.embedder import get_embedder
 from app.schemas.question import GenerateRequest, QuestionOut, QuestionUpdate
@@ -281,7 +281,7 @@ async def check_duplicates(
 @register("generate_questions")
 async def generate_questions_task(payload: dict[str, Any]) -> None:
     task_id = payload["task_id"]
-    async with AsyncSessionLocal() as session:
+    async with task_session() as session:
         try:
             await _run_generate(session, payload)
         except KnowledgeNotCovered as exc:

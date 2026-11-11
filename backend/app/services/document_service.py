@@ -15,7 +15,7 @@ from app.core import cache
 from app.core.config import settings
 from app.core.exceptions import BadRequest, Conflict, NotFound, ParseFailed
 from app.core.logging import get_logger
-from app.db.base import AsyncSessionLocal
+from app.db.base import task_session
 from app.db.models import (
     ChunkKnowledgePoint,
     Document,
@@ -286,7 +286,7 @@ async def reparse_document(session: AsyncSession, document_id: int, user: User) 
 async def parse_document_task(payload: dict[str, Any]) -> None:
     task_id = payload["task_id"]
     document_id = int(payload["document_id"])
-    async with AsyncSessionLocal() as session:
+    async with task_session() as session:
         try:
             await _run_parse(session, task_id, document_id)
         except Exception as exc:  # 失败必须落库
