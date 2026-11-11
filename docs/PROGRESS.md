@@ -25,7 +25,7 @@
 |---|---|---|---|
 | M1-1 | 注册/登录/me/改密 | ✅ | bcrypt(12) + JWT(HS256)；`tests/unit/test_security.py`、`tests/integration/test_auth_course.py` |
 | M1-2 | `deps.py` 角色守卫 | ✅ | `require_role` / `TeacherUser`；越权 403 有集成测试（含建课越权、跨教师课程隔离） |
-| M1-3 | 课程 CRUD + 成员管理 | ✅ | 学生仅见已加入课程；`add_members` 批量用户名 |
+| M1-3 | 课程 CRUD + 成员管理 | ✅ | 学生仅见已加入课程；`add_members` 批量用户名。**「D」是本轮补的**：原先只有增改查，用户建课后再也删不掉。`DELETE /courses/{id}`（仅创建者/管理员）会级联清理课件、分块、知识点、题库、试卷、作答、向量与上传文件，重复删除返回 404 |
 | M1-4 | 知识点树 CRUD | ✅ | 递归 `KnowledgePointOut.children`；另加 `knowledge-points:auto` 从课件标题结构抽取 |
 | M1-5 | 登录页 / 课程列表 / 工作台四 Tab | ✅ | `pages/Login.tsx`、`pages/Courses.tsx`、`pages/course/CourseWorkbench.tsx` |
 

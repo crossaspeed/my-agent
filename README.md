@@ -332,6 +332,7 @@ make build       # 前端生产构建
 - PDF 扫描页未接入 OCR（仅记录 `ocr_pages`，提示人工补录）
 - `.env.example` 默认仍为 `hash`（保证克隆即跑、不下载 2GB 模型）；**要真实语义检索**请切 `EMBEDDING_PROVIDER=local`（BGE-M3）或 `api`，切换后必须 `reindex`
 - 检索门禁按「未登录词率 + 相关度」双条件判定，仍无法拦住"部分术语命中"的领域外提问（如用含"数据库"的 DNS 段落回答 B+ 树问题）
+- 课程删除：仅创建者/管理员可在课程卡片右下角删除，会连带清理课件、知识点、题库、试卷、作答、向量与上传文件（不可恢复，前端二次确认）
 - 两阶段重排已实现（`RERANK_BACKEND=off|cross|llm`）。实测**同源交叉编码器 bge-reranker 在本语料零增益**（分数压在 0.5），LLM listwise 重排把 Hit@1 从 69.2% 拉到 100%，代价 1.2s / 2.2k tokens per 次，故导学（SSE）默认不开
 - 升级过程与量化收益见 [`docs/experiments/retrieval-upgrade.md`](docs/experiments/retrieval-upgrade.md)（Hit@1 53.8%→69.2%，Hit@3 76.9%→100%）
 - 主观题评分依赖 LLM 质量，低置信结果转人工（`needs_human`），系统不做「自动放行」

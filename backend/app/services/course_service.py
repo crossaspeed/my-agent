@@ -2,11 +2,18 @@
 
 from __future__ import annotations
 
-from sqlalchemy import func, select
+import asyncio
+import shutil
+
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import cache
+from app.core.config import settings
 from app.core.exceptions import BadRequest, Conflict, NotFound
 from app.db.models import (
+    Answer,
+    Attempt,
     ChunkKnowledgePoint,
     Course,
     CourseMember,
@@ -14,9 +21,12 @@ from app.db.models import (
     DocumentChunk,
     KnowledgePoint,
     Paper,
+    PaperQuestion,
     Question,
     User,
 )
+from app.rag import bm25_index
+from app.rag.vector_store import get_vector_store
 from app.schemas.course import (
     CourseCreate,
     CourseOut,
@@ -46,7 +56,10 @@ async def _stats(session: AsyncSession, course_id: int) -> CourseStats:
         or 0
     )
     return CourseStats(
-        documents=await _count(Document, Document.course_id == course_id),
+        # 软删除的课件不计入统计，否则删了课件卡片上还显示旧数量
+        documents=await _count(
+            Document, Document.course_id == course_id, Document.status != "deleted"
+        ),
         questions=await _count(Question, Question.course_id == course_id),
         papers=await _count(Paper, Paper.course_id == course_id),
         students=students,
@@ -293,3 +306,46 @@ async def auto_extract_kps(
 
         bm25_index.invalidate(course.id)
     return created
+
+
+async def delete_course(session: AsyncSession, course_id: int, user: User) -> str:
+    """删除课程及其全部衍生数据（仅创建者/管理员）。
+
+    删除顺序有讲究：
+    - `answers.question_id` 指向 `questions` 且**没有级联**，若先让课程级联删题目会触发外键冲突，
+      因此先显式删答题记录，再删课程让其余表按 DB 级联清理；
+    - 向量库与上传文件不在数据库里，必须先按 course_id 清掉，否则会留下孤儿数据
+      （向量文件里残留的 chunk 会被检索到，但 DB 里已无对应分块）。
+    """
+    course, _ = await require_course(session, course_id, user, "owner")
+    name = course.name
+
+    # 1) 外围资源：向量、上传文件
+    await get_vector_store().delete_by_course(course_id)
+    upload_dir = settings.resolve_path(settings.UPLOAD_DIR) / str(course_id)
+    if upload_dir.exists():
+        await asyncio.to_thread(shutil.rmtree, upload_dir, True)
+
+    # 2) 先清"会挡住级联"的引用：答题记录 → 作答 → 试卷题目 → 试卷 → 题目
+    paper_ids = select(Paper.id).where(Paper.course_id == course_id)
+    question_ids = select(Question.id).where(Question.course_id == course_id)
+    attempt_ids = select(Attempt.id).where(Attempt.paper_id.in_(paper_ids))
+
+    await session.execute(
+        delete(Answer).where(
+            or_(Answer.attempt_id.in_(attempt_ids), Answer.question_id.in_(question_ids))
+        )
+    )
+    await session.execute(delete(Attempt).where(Attempt.paper_id.in_(paper_ids)))
+    await session.execute(delete(PaperQuestion).where(PaperQuestion.paper_id.in_(paper_ids)))
+    await session.execute(delete(Paper).where(Paper.course_id == course_id))
+    await session.execute(delete(Question).where(Question.course_id == course_id))
+
+    # 3) 课程本体：成员/文档/分块/知识点/任务/导学会话由 DB 级联删除
+    await session.execute(delete(Course).where(Course.id == course_id))
+    await session.commit()
+
+    # 4) 进程内索引与检索缓存
+    bm25_index.invalidate(course_id)
+    cache.delete_prefix("search:")
+    return name

@@ -1,5 +1,5 @@
-import { PlusOutlined, TeamOutlined } from '@ant-design/icons'
-import { App, Button, Card, Col, Form, Input, Modal, Row, Space, Statistic, Tag, Typography } from 'antd'
+import { DeleteOutlined, PlusOutlined, TeamOutlined } from '@ant-design/icons'
+import { App, Button, Card, Col, Form, Input, Modal, Popconfirm, Row, Space, Statistic, Tag, Typography } from 'antd'
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
@@ -39,6 +39,15 @@ export default function CoursesPage() {
       form.resetFields()
       void queryClient.invalidateQueries({ queryKey: ['courses'] })
       navigate(`/courses/${course.id}`)
+    },
+    onError: (error) => message.error(errorText(error)),
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => courseApi.remove(id),
+    onSuccess: () => {
+      message.success('课程已删除')
+      void queryClient.invalidateQueries({ queryKey: ['courses'] })
     },
     onError: (error) => message.error(errorText(error)),
   })
@@ -88,7 +97,30 @@ export default function CoursesPage() {
                     <Tag color={ROLE_TAG[course.my_role]?.color}>{ROLE_TAG[course.my_role]?.text ?? course.my_role}</Tag>
                   </Space>
                 }
-                extra={<Typography.Text type="secondary">{course.code}</Typography.Text>}
+                extra={
+                  <Space size={2} onClick={(event) => event.stopPropagation()}>
+                    <Typography.Text type="secondary">{course.code}</Typography.Text>
+                    {course.my_role === 'owner' && (
+                      <Popconfirm
+                        title={`删除课程「${course.name}」？`}
+                        description="将同时删除该课程的全部课件、知识点、题目、试卷与作答记录，不可恢复。"
+                        okText="确认删除"
+                        okButtonProps={{ danger: true }}
+                        cancelText="取消"
+                        onConfirm={() => deleteMutation.mutate(course.id)}
+                      >
+                        <Button
+                          type="text"
+                          size="small"
+                          danger
+                          icon={<DeleteOutlined />}
+                          loading={deleteMutation.isPending && deleteMutation.variables === course.id}
+                          title="删除课程"
+                        />
+                      </Popconfirm>
+                    )}
+                  </Space>
+                }
               >
                 <Typography.Paragraph type="secondary" ellipsis={{ rows: 2 }} style={{ minHeight: 44 }}>
                   {course.description || '暂无课程简介'}

@@ -48,6 +48,8 @@ export const courseApi = {
   detail: (id: number) => api.get<Course>(`/courses/${id}`),
   update: (id: number, payload: { name?: string; description?: string }) =>
     api.patch<Course>(`/courses/${id}`, payload),
+  // 删除课程（连带课件/知识点/题库/试卷/作答），仅创建者可用
+  remove: (id: number) => api.delete<null>(`/courses/${id}`),
   members: (id: number) => api.get<Member[]>(`/courses/${id}/members`),
   addMembers: (id: number, usernames: string[]) =>
     api.post<Member[]>(`/courses/${id}/members`, { usernames }),

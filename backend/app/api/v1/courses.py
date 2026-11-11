@@ -42,6 +42,12 @@ async def update_course(
     return ok(await course_service.update_course(session, course_id, user, req))
 
 
+@router.delete("/courses/{course_id}", summary="删除课程（创建者，含全部课件/题库/试卷/作答）")
+async def delete_course(course_id: int, user: CurrentUser, session: SessionDep):
+    name = await course_service.delete_course(session, course_id, user)
+    return ok(None, message=f"课程「{name}」及其课件、题库、试卷、作答记录已删除")
+
+
 @router.post("/courses/{course_id}/members", summary="批量添加学生")
 async def add_members(
     course_id: int, req: MemberAddRequest, user: CurrentUser, session: SessionDep
