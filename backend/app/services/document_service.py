@@ -482,20 +482,109 @@ async def tag_chunks_to_kps(
     return links
 
 
-async def reconcile_stuck_documents(session: AsyncSession) -> int:
-    """启动时把超时未完成的解析任务标记失败（避免前端无限转圈）。"""
+_STUCK_PENDING_SECONDS = 120
+_STUCK_RUNNING_SECONDS = 180
+_MAX_PARSE_ATTEMPTS = 3
+
+
+def _aware(dt: datetime | None) -> datetime | None:
+    if dt is not None and dt.tzinfo is None:
+        return dt.replace(tzinfo=UTC)
+    return dt
+
+
+def _stuck_reason(job: Job | None, now: datetime) -> str | None:
+    """判断解析任务是否已经卡住；返回 None 表示仍在正常运行。"""
+    if job is None:
+        return "missing"
+    if job.status == "failed":
+        return "failed"
+    if job.status == "success":
+        return "success_but_not_ready"
+    if job.status == "pending":
+        created = _aware(job.created_at)
+        if created and (now - created).total_seconds() > _STUCK_PENDING_SECONDS:
+            return "pending_timeout"
+        return None
+    if job.status == "running":
+        beat = _aware(job.heartbeat_at) or _aware(job.started_at) or _aware(job.created_at)
+        if beat and (now - beat).total_seconds() > _STUCK_RUNNING_SECONDS:
+            return "heartbeat_timeout"
+    return None
+
+
+async def reconcile_stuck_documents(session: AsyncSession, *, enqueue: bool = True) -> int:
+    """启动时回收卡住的解析任务（前端不会无限转圈）。
+
+    消息可能因为 worker 未注册任务、Redis 重启、进程被杀而丢失，此时 Job 永远停在
+    pending、文档永远停在 pending/parsing。这里按明确规则兜底：
+      - 任务缺失 / pending 超时 / running 心跳超时 / 已完成但文档未就绪 → 重新入队
+      - 任务已 failed → 文档标记失败并带出原因
+      - 同一文档累计尝试超过 _MAX_PARSE_ATTEMPTS → 标记失败，交给用户手动重试
+    """
     rows = await session.execute(
-        select(Document).where(Document.status.in_(["parsing", "chunking", "embedding"]))
+        select(Document).where(
+            Document.status.in_(["pending", "parsing", "chunking", "embedding"])
+        )
     )
+    docs = list(rows.scalars().all())
+    if not docs:
+        return 0
+
     now = datetime.now(UTC)
-    count = 0
-    for doc in rows.scalars().all():
-        created = doc.created_at
-        if created and created.tzinfo is None:
-            created = created.replace(tzinfo=UTC)
-        if created and (now - created).total_seconds() > 3600:
+    handled = 0
+    submits: list[tuple[str, dict[str, Any]]] = []
+
+    for doc in docs:
+        job = await job_service.find_by_target(session, "parse_document", doc.id)
+        attempts = (
+            await session.scalar(
+                select(func.count())
+                .select_from(Job)
+                .where(Job.job_type == "parse_document", Job.target_id == doc.id)
+            )
+        ) or 0
+
+        reason = _stuck_reason(job, now)
+        if reason is None:
+            continue
+
+        if reason == "failed" or not enqueue or attempts >= _MAX_PARSE_ATTEMPTS:
             doc.status = "failed"
-            doc.error_msg = "解析任务超时（应用可能重启过），请点击重新解析"
+            doc.error_msg = (
+                (job.error_msg if job and job.error_msg else None)
+                or "解析任务长时间无进展（可能因服务重启丢失），请点击重新解析"
+            )[:500]
             session.add(doc)
-            count += 1
-    return count
+            handled += 1
+            continue
+
+        if job is not None:
+            await job_service.fail(session, job.task_id, f"任务卡住（{reason}），已自动重新入队")
+        new_job = await job_service.create(
+            session,
+            job_type="parse_document",
+            target_id=doc.id,
+            course_id=doc.course_id,
+            created_by=doc.uploader_id,
+            payload={"document_id": doc.id},
+        )
+        doc.status = "pending"
+        doc.error_msg = None
+        session.add(doc)
+        submits.append(
+            (
+                new_job.task_id,
+                {"document_id": doc.id, "course_id": doc.course_id, "task_id": new_job.task_id},
+            )
+        )
+        handled += 1
+        logger.warning(
+            "document_requeued", document_id=doc.id, reason=reason, attempts=attempts + 1
+        )
+
+    await session.commit()
+    # 先落库再投递：worker 拿到消息时必须能查到 job 行
+    for task_id, payload in submits:
+        submit("parse_document", task_id, payload)
+    return handled

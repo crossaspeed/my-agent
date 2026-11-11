@@ -31,12 +31,16 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         logger.info("tables_ready", url=settings.DATABASE_URL.split("://")[0])
     try:
         from app.services.document_service import reconcile_stuck_documents
+        from app.services.job_service import reconcile_stale_jobs
 
         async with AsyncSessionLocal() as session:
             fixed = await reconcile_stuck_documents(session)
+            stale = await reconcile_stale_jobs(session)
             await session.commit()
             if fixed:
                 logger.warning("stuck_documents_reset", count=fixed)
+            if stale:
+                logger.warning("stale_jobs_failed", count=stale)
     except Exception as exc:  # pragma: no cover
         logger.warning("startup_reconcile_failed", error=str(exc))
     logger.info(

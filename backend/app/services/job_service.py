@@ -109,3 +109,42 @@ async def find_by_target(
         .limit(1)
     )
     return rows.scalar_one_or_none()
+
+
+def _aware(dt: datetime | None) -> datetime | None:
+    if dt is not None and dt.tzinfo is None:
+        return dt.replace(tzinfo=UTC)
+    return dt
+
+
+async def reconcile_stale_jobs(
+    session: AsyncSession, *, pending_seconds: int = 600, running_seconds: int = 1800
+) -> int:
+    """把长时间无进展的非解析类任务标记失败，避免前端无限轮询。
+
+    解析任务由 document_service.reconcile_stuck_documents 负责重新入队，这里跳过；
+    其余任务（出题 / 阅卷 / 重建索引）重投不幂等，直接判失败并提示用户重试更安全。
+    """
+    rows = await session.execute(
+        select(Job).where(
+            Job.job_type != "parse_document", Job.status.in_(["pending", "running"])
+        )
+    )
+    now = datetime.now(UTC)
+    count = 0
+    for job in rows.scalars().all():
+        if job.status == "pending":
+            started = _aware(job.created_at)
+            limit = pending_seconds
+        else:
+            started = _aware(job.heartbeat_at) or _aware(job.started_at) or _aware(job.created_at)
+            limit = running_seconds
+        if started is None or (now - started).total_seconds() < limit:
+            continue
+        await fail(
+            session,
+            job.task_id,
+            "任务长时间无进展（服务可能重启过），请重新发起",
+        )
+        count += 1
+    return count

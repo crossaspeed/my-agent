@@ -1,3 +1,21 @@
+# 生产编排：一条命令拉起完整链路
+#   docker compose up -d --build           → http://localhost:8080
+#   docker compose --profile qdrant up -d  → 额外启动 Qdrant（需自行设 VECTOR_STORE=qdrant）
+#   docker compose --profile ops up -d     → 额外启动 Flower（http://localhost:5555）
+#
+# 说明：
+# - 数据库结构由一次性的 migrate 服务执行 alembic 迁移，api / worker 等它成功后再启动
+# - 上传目录与向量目录挂载到宿主机 ./data，容器与宿主共享同一份文件
+# - 所有后端服务共用同一份环境变量（x-backend-env），避免多处漂移
+
+x-backend-env: &backend-env
+  DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-change-me-in-prod}@postgres:5432/${POSTGRES_DB:-course_agent}
+  DATABASE_URL_SYNC: postgresql+psycopg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-change-me-in-prod}@postgres:5432/${POSTGRES_DB:-course_agent}
+  REDIS_URL: redis://redis:6379/0
+  USE_CELERY: "true"
+  UPLOAD_DIR: /data/uploads
+  VECTOR_DIR: /data/vectors
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -11,7 +29,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app} -d ${POSTGRES_DB:-course_agent}"]
       interval: 5s
       timeout: 3s
-      retries: 12
+      retries: 20
     restart: unless-stopped
 
   redis:
@@ -23,7 +41,7 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
-      retries: 12
+      retries: 20
     restart: unless-stopped
 
   qdrant:
@@ -31,26 +49,49 @@ services:
     profiles: ["qdrant"]
     volumes:
       - qdrantdata:/qdrant/storage
+    ports:
+      - "6333:6333"
     restart: unless-stopped
+
+  # 一次性迁移：失败会重试，最终失败则阻断后续服务启动（避免"表不存在"的幽灵问题）
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command:
+      - sh
+      - -c
+      - |
+        for i in $$(seq 1 30); do
+          if alembic upgrade head; then echo "[migrate] ok"; exit 0; fi
+          echo "[migrate] retry $$i/30"; sleep 2;
+        done
+        echo "[migrate] failed"; exit 1
+    env_file: .env
+    environment:
+      <<: *backend-env
+      AUTO_CREATE_TABLES: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
 
   api:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]
     env_file: .env
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-change-me-in-prod}@postgres:5432/${POSTGRES_DB:-course_agent}
-      REDIS_URL: redis://redis:6379/0
-      USE_CELERY: "true"
+      <<: *backend-env
       AUTO_CREATE_TABLES: "false"
-      UPLOAD_DIR: /data/uploads
-      VECTOR_DIR: /data/vectors
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_started
+      migrate:
+        condition: service_completed_successfully
     volumes:
       - ./data/uploads:/data/uploads
       - ./data/vectors:/data/vectors
@@ -62,48 +103,54 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "io", "-c", "2", "--loglevel=INFO"]
+    command: ["celery", "-A", "app.workers.celery_app:celery_app", "worker", "-Q", "io", "-c", "2", "--loglevel=INFO"]
     env_file: .env
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-change-me-in-prod}@postgres:5432/${POSTGRES_DB:-course_agent}
-      REDIS_URL: redis://redis:6379/0
-      USE_CELERY: "true"
-      UPLOAD_DIR: /data/uploads
-      VECTOR_DIR: /data/vectors
+      <<: *backend-env
+      AUTO_CREATE_TABLES: "false"
     depends_on:
-      api:
-        condition: service_started
       redis:
         condition: service_started
+      migrate:
+        condition: service_completed_successfully
     volumes:
       - ./data/uploads:/data/uploads
       - ./data/vectors:/data/vectors
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A app.workers.celery_app:celery_app inspect ping -d celery@$$HOSTNAME || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   worker-llm:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "llm,default", "-c", "4", "--loglevel=INFO"]
+    command: ["celery", "-A", "app.workers.celery_app:celery_app", "worker", "-Q", "llm,default", "-c", "4", "--loglevel=INFO"]
     env_file: .env
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-change-me-in-prod}@postgres:5432/${POSTGRES_DB:-course_agent}
-      REDIS_URL: redis://redis:6379/0
-      USE_CELERY: "true"
-      UPLOAD_DIR: /data/uploads
-      VECTOR_DIR: /data/vectors
+      <<: *backend-env
+      AUTO_CREATE_TABLES: "false"
     depends_on:
-      api:
-        condition: service_started
       redis:
         condition: service_started
+      migrate:
+        condition: service_completed_successfully
     volumes:
       - ./data/uploads:/data/uploads
       - ./data/vectors:/data/vectors
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A app.workers.celery_app:celery_app inspect ping -d celery@$$HOSTNAME || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   flower:
-    image: mher/flower:2.0
+    image: mher/flower:2.0.1
     profiles: ["ops"]
     command: ["celery", "--broker=redis://redis:6379/0", "flower", "--port=5555"]
     depends_on:
@@ -120,8 +167,9 @@ services:
     depends_on:
       api:
         condition: service_started
+    # 宿主机 80 常被 Windows 系统进程占用，统一用 8080
     ports:
-      - "80:80"
+      - "8080:80"
     restart: unless-stopped
 
 volumes:

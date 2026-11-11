@@ -12,15 +12,17 @@ else
 endif
 PYBIN := $(VENVBIN)/python
 
-.PHONY: help install dev dev-local stop migrate seed api web test lint fmt build eval logs backup clean
+.PHONY: help install dev dev-local stop migrate seed api web test lint fmt build eval logs backup clean migrate-docker seed-docker ps
 
 help:
 	@echo "make install     安装后端(.venv)与前端依赖"
-	@echo "make dev         启动 docker compose 全栈（pg/redis/qdrant/api/worker/web）"
+	@echo "make dev         启动 docker compose 全栈（pg/redis/api/worker/web）→ http://localhost:8080"
 	@echo "make dev-local   无 Docker：本机起 api(8000) + web(5173)"
 	@echo "make init        初始化数据库：migrate + seed --demo"
-	@echo "make migrate     执行 alembic 迁移"
-	@echo "make seed        写入演示数据（admin/teacher/student + 计算机网络课程）"
+	@echo "make migrate     本机执行 alembic 迁移（Docker 场景用 migrate-docker）"
+	@echo "make seed        本机写入演示数据（Docker 场景用 seed-docker）"
+	@echo "make seed-docker 在 api 容器内写入演示数据"
+	@echo "make ps          查看容器状态"
 	@echo "make test        后端测试（pytest）"
 	@echo "make lint        ruff 检查 + 前端类型检查"
 	@echo "make build       前端生产构建"
@@ -52,6 +54,16 @@ migrate:
 
 seed:
 	cd backend && $(abspath $(PYBIN)) -m app.cli seed --demo
+
+# Docker 场景：迁移由 compose 的 migrate 服务自动执行，数据用容器内 CLI 写入
+seed-docker:
+	docker compose exec -T api python -m app.cli seed --demo
+
+migrate-docker:
+	docker compose run --rm migrate
+
+ps:
+	docker compose ps
 
 api:
 	cd backend && $(abspath $(PYBIN)) -m uvicorn app.main:app --reload --port 8000

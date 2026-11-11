@@ -34,3 +34,8 @@ celery_app.conf.update(
 )
 
 load_all()
+
+# 注册 Celery 任务声明：registry 只装载任务实现（与 broker 无关），
+# 真正带 @celery_app.task 的薄封装在 tasks/celery_tasks.py 里，必须显式导入才会注册。
+# 放在 load_all() 之后以避免与 celery_app 的循环导入。
+from app.workers.tasks import celery_tasks  # noqa: E402,F401
