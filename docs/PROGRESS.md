@@ -15,7 +15,7 @@
 | M0-2 | `core/config.py` + `.env.example` 全量字段 | ✅ | `Settings` 校验 `SECRET_KEY` ≥32、生产环境额外校验；`.env.example` 逐项注释 |
 | M0-3 | 模型 + 首个 Alembic 迁移 | ✅ | `alembic upgrade head` 建出 17 张表（逐字段对齐第 6 章，另加 `jobs.payload`、`answers.needs_human/confidence`、`document_chunks.meta`） |
 | M0-4 | `main.py`：CORS / 异常 handler / trace / health | ✅ | 统一 `{code,message,data}` 信封；`X-Trace-Id`；`/health` 返回依赖健康 |
-| M0-5 | docker-compose + 后端多阶段 Dockerfile | 🟡 | 编排与镜像已写好（`docker-compose.yml` / `dev.yml` / `backend/Dockerfile`），**本机无 Docker，未实机验证容器** |
+| M0-5 | docker-compose + 后端多阶段 Dockerfile | ✅ | 已在 Docker Desktop（29.9.3 / Compose v5.7.0）实机跑通：6 个服务全部 `(healthy)`，一次性 `migrate` 服务自动执行 alembic，`seed --demo` 在容器内生成演示数据 |
 | M0-6 | 前端脚手架 + 布局壳 + axios 客户端 | ✅ | Vite+TS+AntD+Router+Query+Zustand；`npm run build` 通过 |
 | M0-7 | `cli.py seed` | ✅ | `python -m app.cli seed --demo` 一条命令产出课程/课件/题库/试卷/作答/报告 |
 
@@ -139,13 +139,26 @@
 10. **教师角色守卫前移到路由层**
     `POST /courses` 原仅依赖 `CurrentUser`（由 service 内部判断），越权用例暴露了漏洞。现改为 `TeacherUser` 依赖，403 由框架统一返回，与 M1-2 的验收口径一致。
 
+11. **容器启动补了 `migrate` 一次性服务**
+    原编排把 `AUTO_CREATE_TABLES` 设为 false，却没人执行 `alembic upgrade head`，容器起来就是"表不存在"。现加 `migrate` 服务（带 30 次重试），api / worker 通过 `service_completed_successfully` 等它成功；迁移失败会直接阻断启动，而不是留一个报错的半成品。
+
+12. **Celery 任务注册缺失（实机才暴露）**
+    `registry.load_all()` 只装载任务实现，`tasks/celery_tasks.py` 里带 `@celery_app.task` 的薄封装从未被导入，worker 启动日志的 `[tasks]` 段是空的，投递后一律 `Received unregistered task`。已在 `celery_app.py` 末尾显式导入该模块（放在 `load_all()` 之后避免循环导入）。这类问题单靠单测（线程池路径）无法发现。
+
+13. **卡住任务的确定性回收**
+    消息丢失时 `jobs` 永远 pending、文档永远停在 pending/parsing，前端无限转圈。`reconcile_stuck_documents` 重写为按「任务缺失 / pending 超时 / running 心跳超时」重新入队（同文档最多 3 次），超过则标记失败并给出可读原因；另加 `reconcile_stale_jobs` 处理出题/阅卷/重建索引这类不可安全重投的任务，直接判失败提示重试。
+
+14. **前端 lock 文件指向私有源**
+    `package-lock.json` 里 214 个依赖的 `resolved` 全是你本机的 `packages.aliyun.com` 私有源，容器内无凭据 → `npm ci` 401。已改为 `registry.npmjs.org`（路径与完整性哈希不变），使镜像可复现构建。
+
 ---
 
 ## 已知技术债
 
 优先级从高到低：
 
-1. **未实机验证的部分**：Docker 编排、Celery 路径、Chroma/Qdrant、PG 连接池与 EXPLAIN、`local` BGE-M3 向量、Playwright E2E、Locust 压测。代码与配置均已就绪，缺的是执行环境。
+1. **仍未实机验证**：Chroma/Qdrant 运行态、`local` BGE-M3 向量、Playwright E2E、Locust 压测、PG 连接池与 EXPLAIN。
+   （Docker 全栈、Celery 双队列、PG + Alembic 迁移、Nginx 反代下的 SSE 已实机验证通过。）
 2. **人工改分（M4-10 P1）**：目前只能整卷重跑阅卷，教师无法对单题改分并重算总分。
 3. **多轮对话摘要压缩**：当前只截取最近 10 条，长会话会丢早期信息。
 4. **OCR**：扫描版 PDF 只记录 `ocr_pages` 提示，不提取文字。

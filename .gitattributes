@@ -1,0 +1,21 @@
+# 统一换行：仓库内文本文件一律 LF，避免 Windows 检出后 Makefile / 容器内脚本因 CRLF 失效
+* text=auto eol=lf
+
+# 明确指定，防止被工具链改回 CRLF
+Makefile text eol=lf
+Dockerfile text eol=lf
+*.Dockerfile text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.conf text eol=lf
+*.md text eol=lf
+
+# 二进制/生成的产物不做换行转换
+*.png binary
+*.jpg binary
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.pyc binary

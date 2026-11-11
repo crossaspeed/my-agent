@@ -87,13 +87,27 @@ flowchart TB
 ### 3.1 方式一：Docker（完整栈，推荐用于验收）
 
 ```bash
-cp .env.example .env          # 按需填 LLM_API_KEY；不填则自动使用 mock 模型
-make dev                      # postgres + redis + api + worker-io + worker-llm + web
-make migrate                  # alembic upgrade head
-make seed                     # 演示数据：计算机网络课程 + 2 份课件 + 题库 + 试卷
-# 浏览器打开 http://localhost        （前端）
-#         http://localhost:8000/docs （OpenAPI）
+cp .env.example .env                # 按需填 LLM_API_KEY；不填则自动使用 mock 模型
+docker compose up -d --build       # postgres + redis + api + worker-io + worker-llm + web
+                                   # 数据库迁移由一次性 migrate 服务自动完成（无需手动 alembic）
+docker compose exec api python -m app.cli seed --demo   # 演示数据：课程 + 2 份课件 + 题库 + 试卷 + 已判分作答
+docker compose ps                  # 全部服务应显示 (healthy)
 ```
+
+打开：
+
+| 入口 | 地址 |
+|---|---|
+| 前端 | http://localhost:8080 |
+| OpenAPI | http://localhost:8000/docs |
+| 健康检查 | http://localhost:8000/health |
+| Flower（可选） | `docker compose --profile ops up -d` → http://localhost:5555 |
+
+> **为什么是 8080**：Windows 上 80 端口常被系统进程（`System`/http.sys）占用，容器映射 80 会直接失败，因此 web 统一映射到 8080；如需 80，改 `docker-compose.yml` 里 `web.ports` 即可。
+>
+> 常用命令：`make logs`（跟踪三服务日志）、`make ps`、`make stop`、`make seed-docker`、`make backup`。
+> 本机没有 `make` 时，直接用等价的 `docker compose ...` 命令。
+
 
 ### 3.2 方式二：本机直跑（无需 Docker，默认零依赖）
 
@@ -121,9 +135,21 @@ cd frontend && npm install && npm run dev     # http://127.0.0.1:5173（已代�
 
 ```bash
 curl http://127.0.0.1:8000/health          # {"status":"ok","dependencies":{...}}
+docker compose ps                          # 6 个服务全部 (healthy)
 make test                                  # 后端 89 passed / 1 skipped
 cd frontend && npm run build               # tsc + vite build 通过
 ```
+
+### 3.4 常见启动问题
+
+| 现象 | 原因 | 处理 |
+|---|---|---|
+| 构建时 `failed to fetch oauth token: ... Bad Gateway` | Docker Hub 鉴权网关偶发不可达 | 先 `docker pull python:3.12-slim node:22-alpine nginx:1.27-alpine` 预热，再 `docker compose build`；或给 Docker Desktop 配置镜像加速 |
+| 构建时 `npm error ... 401 Unauthorized` | `package-lock.json` 指向了需要登录的私有源 | 已统一改为公共源；若再次出现，`npm install --package-lock-only --registry=https://registry.npmjs.org` 后重建 |
+| pip 依赖下载慢/超时 | 容器内访问 PyPI 慢 | `docker compose build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple` |
+| 端口占用 `bind: ... 80` | Windows 系统进程占用 80 | web 已固定映射 8080，直接访问 http://localhost:8080 |
+| 页面能开但接口 502 | api 还没 healthy，或 migrate 失败 | `docker compose logs migrate api`；修复后用 `docker compose up -d` 重试 |
+| 上传课件一直"解析中" | worker 未启动/任务丢失 | 查看 `docker compose logs worker-io`；api 重启时会自动回收卡住任务并重新入队（最多 3 次） |
 
 ---
 

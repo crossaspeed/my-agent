@@ -57,7 +57,7 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    U["用户浏览器"] -->|80| WEB["web 容器<br/>Nginx + 静态包"]
+    U["用户浏览器"] -->|8080| WEB["web 容器<br/>Nginx + 静态包"]
     WEB -->|/api| API["api 容器<br/>uvicorn ×1"]
     API --> PG[("postgres:16")]
     API --> RE[("redis:7")]
