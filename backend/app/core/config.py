@@ -79,10 +79,15 @@ class Settings(BaseSettings):
     LLM_CIRCUIT_COOLDOWN_SECONDS: int = 60
 
     # ---------- RAG 参数 ----------
+    # 分块边界策略：size（仅按字数，默认）/ heading（标题变更即断开）/ slide（换页即断开）
+    # PPT 类课件建议 heading 或 slide：一页/一小节一个知识单元，避免同一知识点被切成多块
+    CHUNK_BOUNDARY: str = "size"
     CHUNK_TARGET_CHARS: int = 600
     CHUNK_MAX_CHARS: int = 900
     CHUNK_MIN_CHARS: int = 120
     CHUNK_OVERLAP_CHARS: int = 100
+    # 查询改写：把口语提问改写成课件术语（多一次 LLM 调用，约 1s），失败自动退回原查询
+    QUERY_REWRITE_ENABLED: bool = False
     RETRIEVE_TOP_K: int = 6
     RETRIEVE_CANDIDATES: int = 20
     RRF_K: int = 60
@@ -142,6 +147,8 @@ class Settings(BaseSettings):
                 raise ValueError("LLM_PROVIDER 非 mock 时必须提供 LLM_API_KEY")
         if self.CHUNK_OVERLAP_CHARS >= self.CHUNK_TARGET_CHARS:
             raise ValueError("CHUNK_OVERLAP_CHARS 必须小于 CHUNK_TARGET_CHARS")
+        if self.CHUNK_BOUNDARY not in ("size", "heading", "slide"):
+            raise ValueError("CHUNK_BOUNDARY 只能是 size / heading / slide")
         return self
 
     @property

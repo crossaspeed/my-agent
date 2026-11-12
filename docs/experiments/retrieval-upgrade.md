@@ -388,3 +388,37 @@ python backend/scripts/bench_report.py bench.json
 | `backend/app/agents/grader_graph.py` / `tutor_graph.py` | 阅卷开启、导学显式关闭重排 |
 | `backend/app/api/v1/documents.py` + `schemas/document.py` | `/courses/{id}/search` 支持 `use_rerank` |
 | `backend/tests/unit/test_rerank.py` | 降级路径、排序正确性、重排分不污染 relevance |
+
+---
+
+## 11. 补充：门禁阈值随向量模型重标定（2026-11-12）
+
+`MIN_RETRIEVE_SCORE=0.35` 是 hash 向量时代定的（那时无关块相似度只有 0.1~0.2）。
+换 BGE-M3 后无关片段相似度整体抬到 0.47~0.71，阈值没跟着调，导致 20 条越界提问放行 10 条。
+
+用 `scripts/threshold_sweep.py` 对已保存的评测结果**离线复算**（不必反复改配置）：
+
+| 阈值 | 误拒率 | 误纳率 | 静默错误 | 误拒+误纳 |
+|---|---|---|---|---|
+| 0.35（旧默认） | 0.025 | 0.500 | 2 | 0.525 |
+| 0.50 | 0.025 | 0.400 | 2 | 0.425 |
+| **0.55** | **0.050** | **0.150** | 2 | **0.200** |
+| 0.56 | 0.150 | 0.150 | 1 | 0.300 |
+| 0.60 | 0.300 | 0.150 | 0 | 0.450 |
+
+（900/1200 分块 + LLM 重排；40 条语料内 + 20 条领域外）
+
+**结论与已落地的改动：**
+
+- 0.55 是误拒与误纳之和的最小点：误纳 50%→**15%**，误拒 2.5%→**5%**，命中率完全不变
+  （阈值只决定“答不答”，不影响“答得对不对”）；
+- 已把 `.env` 的 `MIN_RETRIEVE_SCORE` 调到 0.55，代码默认值仍保留 0.35
+  （`.env.example` 默认 `EMBEDDING_PROVIDER=hash`，hash 下 0.35 才是合适的）；
+- 再往上（0.56+）误拒急剧上升：0.60 时有 30% 的语料内提问被误判为“知识库未覆盖”，
+  这个代价比多放行几条越界提问更严重——**宁可少答，不可乱答的前提是“该答的要答”**。
+
+**这不是一次性的数字，换语料/换模型都要重扫。** 复现：
+
+```bash
+python scripts/threshold_sweep.py eval_out/bench.json --start 0.45 --end 0.65 --step 0.01
+```

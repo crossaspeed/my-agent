@@ -41,6 +41,8 @@ class ChunkConfig:
     min_chars: int = settings.CHUNK_MIN_CHARS
     overlap_chars: int = settings.CHUNK_OVERLAP_CHARS
     keep_tables_whole: bool = True
+    # size：只按字数（默认，跨页合并）/ heading：标题变更断开 / slide：换页断开
+    boundary: str = settings.CHUNK_BOUNDARY
 
 
 def _split_sentences(text: str, limit: int) -> list[str]:
@@ -165,12 +167,25 @@ def chunk_segments(segments: list[Segment], cfg: ChunkConfig | None = None) -> l
     # 块内是否已装入正文（同一个块可能先装标题再装正文，块的章节归属应以正文为准）
     has_body = False
     overlap_prefix = ""
+    # 当前块所属的结构范围（heading/slide 模式下用于判断是否越界）
+    buf_key: Any = None
 
-    def flush() -> None:
+    def scope_key(unit: dict[str, Any]) -> Any:
+        """结构边界的判定键；size 模式返回 None（即不做结构判断）。"""
+        if cfg.boundary == "slide":
+            slide = unit["slide_no"]
+            return ("slide", slide) if slide is not None else ("page", unit["page_no"])
+        if cfg.boundary == "heading":
+            return ("heading", unit["heading_path"])
+        return None
+
+    def flush(use_overlap: bool = True) -> None:
         nonlocal buf, buf_len, start_page, start_slide, start_heading, start_offset, has_body
+        nonlocal overlap_prefix, buf_key
         content = "\n".join(buf).strip()
         if not content:
             buf, buf_len = [], 0
+            buf_key = None
             return
         chunks.append(
             Chunk(
@@ -180,20 +195,23 @@ def chunk_segments(segments: list[Segment], cfg: ChunkConfig | None = None) -> l
                 heading_path=start_heading,
                 char_start=start_offset,
                 char_end=start_offset + len(content),
-                meta={"overlap_prefix": bool(overlap_prefix)},
+                meta={"overlap_prefix": bool(overlap_prefix) if use_overlap else False},
             )
         )
         buf, buf_len = [], 0
         start_page = start_slide = start_heading = None
         has_body = False
+        buf_key = None
+        if not use_overlap:
+            overlap_prefix = ""
 
     for unit in units:
         text = unit["text"]
         kind = unit["kind"]
 
         if kind == "table" and cfg.keep_tables_whole:
+            flush(use_overlap=False)
             for piece in _chunk_table(text, cfg):
-                flush()
                 chunks.append(
                     Chunk(
                         content=piece,
@@ -207,14 +225,22 @@ def chunk_segments(segments: list[Segment], cfg: ChunkConfig | None = None) -> l
                 )
             continue
 
+        # 结构边界：跨标题 / 跨页时强制断开，且不把上一块尾部带进新块。
+        # 否则相邻块共享 100 字重叠，检索与重排都难以区分“上一块 / 这一块”。
+        key = scope_key(unit)
+        if cfg.boundary != "size" and buf and key != buf_key:
+            flush(use_overlap=False)
+
         pieces = _split_sentences(text, cfg.max_chars) if len(text) > cfg.max_chars else [text]
         for piece in pieces:
             piece = piece.strip()
             if not piece:
                 continue
             if buf_len + len(piece) > cfg.target_chars and buf_len >= cfg.min_chars:
-                flush()
-                overlap_prefix = _tail_overlap(chunks[-1].content, cfg.overlap_chars) if chunks else ""
+                flush(use_overlap=True)
+                overlap_prefix = (
+                    _tail_overlap(chunks[-1].content, cfg.overlap_chars) if chunks else ""
+                )
                 if overlap_prefix:
                     buf = [overlap_prefix]
                     buf_len = len(overlap_prefix)
@@ -228,6 +254,7 @@ def chunk_segments(segments: list[Segment], cfg: ChunkConfig | None = None) -> l
                 start_heading = unit["heading_path"]
                 start_offset = unit["start"]
                 has_body = False
+                buf_key = key
             elif not has_body and kind != "title":
                 # 块首是标题、随后装入正文：把块归属升级为正文所属章节，元数据更精确
                 start_heading = unit["heading_path"]
@@ -237,13 +264,20 @@ def chunk_segments(segments: list[Segment], cfg: ChunkConfig | None = None) -> l
                 has_body = True
     flush()
 
-    # 3) 过短块向后合并
+    # 3) 过短块向后合并（只在同一结构范围内合并，跨页/跨节一律不并）
     merged: list[Chunk] = []
     for chunk in chunks:
+        same_scope = bool(merged) and chunk.heading_path == merged[-1].heading_path
+        if cfg.boundary == "slide":
+            same_scope = (
+                bool(merged)
+                and chunk.slide_no == merged[-1].slide_no
+                and chunk.page_no == merged[-1].page_no
+            )
         if (
             merged
             and len(chunk.content) < cfg.min_chars
-            and chunk.heading_path == merged[-1].heading_path
+            and same_scope
             and len(merged[-1].content) + len(chunk.content) <= cfg.max_chars
         ):
             merged[-1].content = merged[-1].content + "\n" + chunk.content

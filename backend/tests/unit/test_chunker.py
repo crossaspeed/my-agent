@@ -68,3 +68,52 @@ def test_chunk_stats_warning():
     stats = chunk_stats(chunks)
     assert stats["count"] == len(chunks)
     assert stats["heading_ratio"] == 0
+
+
+def _two_slides() -> list[Segment]:
+    return [
+        Segment(text="第一页讲的是分块边界的意义。" * 6, slide_no=1, page_no=1),
+        Segment(text="第二页讲的是另一个独立知识点。" * 6, slide_no=2, page_no=2),
+    ]
+
+
+def test_size_boundary_still_merges_across_slides():
+    """默认 size 模式必须保持旧行为：长度够就跨页合并。"""
+    cfg = _cfg(target_chars=300, max_chars=400, min_chars=10)
+    chunks = chunk_segments(_two_slides(), cfg)
+    assert len(chunks) == 1
+
+
+def test_slide_boundary_splits_pages():
+    cfg = _cfg(target_chars=300, max_chars=400, min_chars=10, boundary="slide")
+    chunks = chunk_segments(_two_slides(), cfg)
+    assert len(chunks) == 2
+    assert chunks[0].slide_no == 1 and chunks[1].slide_no == 2
+    # 结构边界不沿用上一块的尾部重叠，否则相邻块内容近似、检索难以区分
+    assert not chunks[1].meta.get("overlap_prefix")
+
+
+def test_heading_boundary_splits_sections():
+    segs = [
+        Segment(text="3.1 封装成帧", kind="title", style={"level": 1}, page_no=1),
+        Segment(text="帧首部和帧尾部用于帧定界。" * 6, page_no=1),
+        Segment(text="3.2 差错检测", kind="title", style={"level": 1}, page_no=1),
+        Segment(text="循环冗余检验只能做到无差错接受。" * 6, page_no=1),
+    ]
+    chunks = chunk_segments(segs, _cfg(boundary="heading"))
+    assert len(chunks) == 2
+    assert chunks[0].heading_path == "3.1 封装成帧"
+    assert chunks[1].heading_path == "3.2 差错检测"
+
+
+def test_boundary_merge_does_not_cross_section():
+    """过短块的向后合并也不能跨节，否则边界等于没切。"""
+    segs = [
+        Segment(text="3.1 小节标题", kind="title", style={"level": 1}, page_no=1),
+        Segment(text="很短的一句。", page_no=1),
+        Segment(text="3.2 另一个标题", kind="title", style={"level": 1}, page_no=1),
+        Segment(text="另一句也很短。", page_no=1),
+    ]
+    chunks = chunk_segments(segs, _cfg(boundary="heading", min_chars=200))
+    assert len(chunks) == 2
+
