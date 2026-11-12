@@ -49,8 +49,9 @@ sed -i 's/^CHUNK_MAX_CHARS=.*/CHUNK_MAX_CHARS=1200/' .env
 docker compose up -d api worker-io worker-llm
 
 # 2) 对 4 份文档逐一点「重新解析」，然后迁移 gold 并重跑
-python /tmp/remap_cases.py --course-id 8 --old /tmp/ranges-A.json \
-    --cases /tmp/cases.csv --out /tmp/cases-new.csv
+python /tmp/remap_cases.py --course-id 8 \
+    --old docs/experiments/ranges/ranges-A-size600.json \
+    --cases docs/experiments/cases-course8.csv --out /tmp/cases-new.csv
 python /tmp/retrieval_bench.py --cases /tmp/cases-new.csv --course-id 8 --out /tmp/bench.json
 ```
 
@@ -64,13 +65,18 @@ python /tmp/retrieval_bench.py --cases /tmp/cases-new.csv --course-id 8 --out /t
 
 ## 产物
 
+均归档在 `docs/experiments/`，不含分块正文（只有 id / 区间 / 标题），可安全公开：
+
 | 文件 | 内容 |
 |---|---|
-| `ranges-A/B/C/D/E.json` | 各档分块的字符区间快照（gold 迁移与覆盖计算的依据） |
-| `ranges-final.json` | 当前生效配置（900/1200）的分块快照 |
-| `cases-A-size600.csv` | 600 字档的旧标注（旧 id，留档用） |
-| `cases.csv` | 当前生效标注（900/1200 档的 id） |
-| `bench-course8-final.json` | 最终配置的逐条明细 |
+| `ranges/ranges-A-size600.json` | 600/900 档（改造前）的分块字符区间，**gold 迁移的源快照** |
+| `ranges/ranges-B-heading600.json` ~ `ranges-E-size1200.json` | 其余四档的区间快照 |
+| `ranges/ranges-current.json` | 当前生效配置（900/1200）的快照 |
+| `cases-course8-size600.csv` | 600 字档的标注（旧 id，留档用于迁移演示） |
+| `cases-course8.csv` | **当前生效标注**（900/1200 档的 id） |
+| `bench-course8-{slide600,heading600,size600,size900,size1200}.json` | 五档逐条明细（无重排） |
+| `bench-course8-size900-rerank.json` | 900/1200 档 + LLM 重排 |
+| `bench-course8-final-llm-t055.json` | **最终生效配置**（900/1200 + 重排 + 阈值 0.55） |
 
 ## 补测：开重排之后（2026-11-12）
 

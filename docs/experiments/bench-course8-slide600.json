@@ -1,0 +1,2696 @@
+{
+  "metrics": {
+    "n_total": 60,
+    "n_in_scope": 40,
+    "n_out_scope": 20,
+    "hit@1": 0.1,
+    "hit@3": 0.4,
+    "false_reject_rate": 0.0,
+    "false_accept_rate": 0.7,
+    "silent_error": 24,
+    "gate_hit": 0.075,
+    "relevance_median": 0.6538,
+    "avg_latency_ms": 352.2,
+    "by_category": {
+      "口语": {
+        "n": 15,
+        "n_in_scope": 15,
+        "n_out_scope": 0,
+        "hit@1": 0.0667,
+        "hit@3": 0.2667,
+        "false_reject": 0.0,
+        "false_accept": 0.0,
+        "silent_error": 11,
+        "gate_hit": 0.0667,
+        "avg_latency_ms": 345.0
+      },
+      "字面": {
+        "n": 15,
+        "n_in_scope": 15,
+        "n_out_scope": 0,
+        "hit@1": 0.0667,
+        "hit@3": 0.4667,
+        "false_reject": 0.0,
+        "false_accept": 0.0,
+        "silent_error": 8,
+        "gate_hit": 0.0,
+        "avg_latency_ms": 369.8
+      },
+      "跨语言": {
+        "n": 10,
+        "n_in_scope": 10,
+        "n_out_scope": 0,
+        "hit@1": 0.2,
+        "hit@3": 0.5,
+        "false_reject": 0.0,
+        "false_accept": 0.0,
+        "silent_error": 5,
+        "gate_hit": 0.2,
+        "avg_latency_ms": 347.9
+      },
+      "领域外": {
+        "n": 20,
+        "n_in_scope": 0,
+        "n_out_scope": 20,
+        "hit@1": 0.0,
+        "hit@3": 0.0,
+        "false_reject": 0.0,
+        "false_accept": 0.7,
+        "silent_error": 0,
+        "gate_hit": 0.0,
+        "avg_latency_ms": 346.7
+      }
+    },
+    "embedder": "LocalEmbedder",
+    "dim": 1024,
+    "course_id": 8,
+    "cases_source": "/tmp/cases-C.csv（60 条）",
+    "rerank": false,
+    "rerank_backend": "off",
+    "rerank_config": "llm"
+  },
+  "rows": [
+    {
+      "category": "字面",
+      "query": "数据链路层研究的是哪两个结点之间的数据传输",
+      "gold": [
+        677
+      ],
+      "latency_ms": 622,
+      "top": [
+        {
+          "chunk_id": 675,
+          "heading": "数据链路层的简单模型",
+          "score": 1.0,
+          "relevance": 0.9167,
+          "coverage": 0.9167,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 677,
+          "heading": "3.1 数据链路层的几个共同问题3.1.1 数据链路和帧",
+          "score": 0.9685,
+          "relevance": 0.7561,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 678,
+          "heading": "3.1 数据链路层的几个共同问题3.1.1 数据链路和帧",
+          "score": 0.9685,
+          "relevance": 0.7942,
+          "coverage": 0.4167,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 675,
+      "relevance_top1": 0.9167,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "什么是封装成帧",
+      "gold": [
+        687
+      ],
+      "latency_ms": 353,
+      "top": [
+        {
+          "chunk_id": 680,
+          "heading": "（1）封装成帧",
+          "score": 1.0,
+          "relevance": 0.7517,
+          "coverage": 0.6667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 681,
+          "heading": "（1）封装成帧",
+          "score": 1.0,
+          "relevance": 1.0,
+          "coverage": 1.0,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 684,
+          "heading": "（1）封装成帧",
+          "score": 0.9685,
+          "relevance": 0.6667,
+          "coverage": 0.6667,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 681,
+      "relevance_top1": 1.0,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "循环冗余检验中余数 R 等于 0 说明什么",
+      "gold": [
+        699
+      ],
+      "latency_ms": 350,
+      "top": [
+        {
+          "chunk_id": 695,
+          "heading": "循环冗余检验CRC",
+          "score": 1.0,
+          "relevance": 0.812,
+          "coverage": 0.6667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 694,
+          "heading": "循环冗余检验CRC",
+          "score": 0.9761,
+          "relevance": 0.7981,
+          "coverage": 0.6667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 693,
+          "heading": "循环冗余检验CRC",
+          "score": 0.9685,
+          "relevance": 0.7602,
+          "coverage": 0.4444,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 695,
+      "relevance_top1": 0.812,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "以太网为什么规定最短有效帧长为 64 字节",
+      "gold": [
+        701,
+        699,
+        704,
+        703
+      ],
+      "latency_ms": 358,
+      "top": [
+        {
+          "chunk_id": 702,
+          "heading": "3.3.2 CSMA/CD协议",
+          "score": 1.0,
+          "relevance": 0.8498,
+          "coverage": 0.8182,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 722,
+          "heading": "（1）MAC 地址",
+          "score": 0.9839,
+          "relevance": 0.7837,
+          "coverage": 0.4545,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 751,
+          "heading": "3.5.2 吉比特以太网",
+          "score": 0.9683,
+          "relevance": 0.7465,
+          "coverage": 0.5455,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 702,
+      "relevance_top1": 0.8498,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "MAC 地址的扩展标识符由谁指派",
+      "gold": [
+        717,
+        716
+      ],
+      "latency_ms": 344,
+      "top": [
+        {
+          "chunk_id": 715,
+          "heading": "（1）MAC地址",
+          "score": 1.0,
+          "relevance": 0.875,
+          "coverage": 0.875,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 757,
+          "heading": "IP 地址与编址方法",
+          "score": 0.9761,
+          "relevance": 0.7632,
+          "coverage": 0.625,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 716,
+          "heading": "（1）MAC 地址",
+          "score": 0.8842,
+          "relevance": 0.5507,
+          "coverage": 0.25,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 715,
+      "relevance_top1": 0.875,
+      "unknown_ratio": 0.125,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "以太网交换机是怎样建立交换表的",
+      "gold": [
+        737
+      ],
+      "latency_ms": 350,
+      "top": [
+        {
+          "chunk_id": 734,
+          "heading": "（2）以太网交换机的工作原理",
+          "score": 1.0,
+          "relevance": 0.9,
+          "coverage": 0.9,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 732,
+          "heading": "（1）以太网交换机的特点",
+          "score": 0.9839,
+          "relevance": 0.8683,
+          "coverage": 0.8,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 730,
+          "heading": "3.4.2 在数据链路层扩展以太网",
+          "score": 0.9607,
+          "relevance": 0.8602,
+          "coverage": 0.8,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 734,
+      "relevance_top1": 0.9,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "网络层向上提供的是无连接还是面向连接的服务",
+      "gold": [
+        756
+      ],
+      "latency_ms": 357,
+      "top": [
+        {
+          "chunk_id": 754,
+          "heading": "4.1 网络层提供的服务",
+          "score": 1.0,
+          "relevance": 0.8221,
+          "coverage": 0.8,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 753,
+          "heading": "网络层的功能",
+          "score": 0.9541,
+          "relevance": 0.6106,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 982,
+          "heading": "客户服务器方式",
+          "score": 0.9251,
+          "relevance": 0.5725,
+          "coverage": 0.3,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 754,
+      "relevance_top1": 0.8221,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "IP 数据报首部的固定部分有多少字节",
+      "gold": [
+        791
+      ],
+      "latency_ms": 347,
+      "top": [
+        {
+          "chunk_id": 789,
+          "heading": "4.2.5 IP 数据报的格式",
+          "score": 1.0,
+          "relevance": 0.875,
+          "coverage": 0.875,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 798,
+          "heading": "【例】 IP 数据报分片",
+          "score": 0.9921,
+          "relevance": 0.875,
+          "coverage": 0.875,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 791,
+          "heading": "4.2.5 IP 数据报的格式",
+          "score": 0.984,
+          "relevance": 0.75,
+          "coverage": 0.75,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 789,
+      "relevance_top1": 0.875,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "IP 数据报首部中 TTL 字段的作用是什么",
+      "gold": [
+        800
+      ],
+      "latency_ms": 350,
+      "top": [
+        {
+          "chunk_id": 800,
+          "heading": "【例】 IP 数据报分片",
+          "score": 1.0,
+          "relevance": 0.6774,
+          "coverage": 0.375,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 682,
+          "heading": "（1）封装成帧",
+          "score": 0.9337,
+          "relevance": 0.6689,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 798,
+          "heading": "【例】 IP 数据报分片",
+          "score": 0.8621,
+          "relevance": 0.6082,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 906,
+      "relevance_top1": 0.6775,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "默认路由的作用是什么",
+      "gold": [
+        812
+      ],
+      "latency_ms": 351,
+      "top": [
+        {
+          "chunk_id": 810,
+          "heading": "路由的类型",
+          "score": 1.0,
+          "relevance": 0.6883,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 811,
+          "heading": "路由的类型",
+          "score": 0.9761,
+          "relevance": 0.6188,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 812,
+          "heading": "分组转发算法",
+          "score": 0.4919,
+          "relevance": 0.5469,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "sparse"
+        }
+      ],
+      "gate_chunk": 810,
+      "relevance_top1": 0.6883,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "子网掩码的组成规则是什么",
+      "gold": [
+        821
+      ],
+      "latency_ms": 350,
+      "top": [
+        {
+          "chunk_id": 820,
+          "heading": "子网掩码的规定",
+          "score": 1.0,
+          "relevance": 0.7761,
+          "coverage": 0.6667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 824,
+          "heading": "【例2】在上例中，若子网掩码改为255.255.224.0。试求网络地址，讨论所得结果。",
+          "score": 0.9839,
+          "relevance": 0.7402,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 823,
+          "heading": "【例1】已知 IP 地址是 141.14.72.24，子网掩码是 255.255.192.0。试求网络地址。",
+          "score": 0.9318,
+          "relevance": 0.6958,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 820,
+      "relevance_top1": 0.7761,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "CIDR 中网络前缀的作用是什么",
+      "gold": [
+        839
+      ],
+      "latency_ms": 348,
+      "top": [
+        {
+          "chunk_id": 837,
+          "heading": "4.3.3 无分类编址 CIDR",
+          "score": 1.0,
+          "relevance": 0.7086,
+          "coverage": 0.6,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 838,
+          "heading": "4.3.3 无分类编址 CIDR",
+          "score": 1.0,
+          "relevance": 0.7145,
+          "coverage": 0.6,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 840,
+          "heading": "4.3.3 无分类编址 CIDR",
+          "score": 0.9761,
+          "relevance": 0.651,
+          "coverage": 0.6,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 838,
+      "relevance_top1": 0.7145,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "RIP 中距离等于 16 表示什么",
+      "gold": [
+        866
+      ],
+      "latency_ms": 368,
+      "top": [
+        {
+          "chunk_id": 864,
+          "heading": "“距离”的定义",
+          "score": 1.0,
+          "relevance": 0.7479,
+          "coverage": 0.5714,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 866,
+          "heading": "距离向量算法（路由）",
+          "score": 0.9761,
+          "relevance": 0.7254,
+          "coverage": 0.7143,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 862,
+          "heading": "4.6.2 内部网关协议 RIP (Routing Information Protocol)",
+          "score": 0.9685,
+          "relevance": 0.6561,
+          "coverage": 0.2857,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 864,
+      "relevance_top1": 0.7479,
+      "unknown_ratio": 0.1429,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "UDP 首部包含哪几个字段、共多少字节",
+      "gold": [
+        906
+      ],
+      "latency_ms": 352,
+      "top": [
+        {
+          "chunk_id": 905,
+          "heading": "5.2.2 UDP 的首部格式",
+          "score": 1.0,
+          "relevance": 0.7444,
+          "coverage": 0.3636,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 906,
+          "heading": "5.2.2 UDP 的首部格式",
+          "score": 0.9839,
+          "relevance": 0.7417,
+          "coverage": 0.4545,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 792,
+          "heading": "4.2.5 IP 数据报的格式",
+          "score": 0.9318,
+          "relevance": 0.6306,
+          "coverage": 0.3636,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 905,
+      "relevance_top1": 0.7444,
+      "unknown_ratio": 0.1818,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "字面",
+      "query": "TIME-WAIT 状态为什么必须等待 2MSL",
+      "gold": [
+        998
+      ],
+      "latency_ms": 347,
+      "top": [
+        {
+          "chunk_id": 914,
+          "heading": "5.4.1 停止等待协议",
+          "score": 1.0,
+          "relevance": 0.5436,
+          "coverage": 0.125,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 911,
+          "heading": "5.4 可靠传输的工作原理5.4.1 停止等待协议",
+          "score": 0.9714,
+          "relevance": 0.5528,
+          "coverage": 0.125,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 996,
+          "heading": "客户服务器方式",
+          "score": 0.9687,
+          "relevance": 0.7915,
+          "coverage": 0.625,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 996,
+      "relevance_top1": 0.7915,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "两台机器开始传数据之前为什么要先对暗号",
+      "gold": [
+        993,
+        992
+      ],
+      "latency_ms": 351,
+      "top": [
+        {
+          "chunk_id": 721,
+          "heading": "（1）MAC 地址",
+          "score": 1.0,
+          "relevance": 0.5674,
+          "coverage": 0.1818,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 686,
+          "heading": "（2）透明传输",
+          "score": 0.9815,
+          "relevance": 0.5569,
+          "coverage": 0.1818,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 873,
+          "heading": "“坏消息传播慢”举例",
+          "score": 0.9784,
+          "relevance": 0.5639,
+          "coverage": 0.0909,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 681,
+      "relevance_top1": 0.7037,
+      "unknown_ratio": 0.1818,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "网络为什么会堵车",
+      "gold": [
+        954,
+        960,
+        959
+      ],
+      "latency_ms": 346,
+      "top": [
+        {
+          "chunk_id": 977,
+          "heading": "5.8.3 随机早期检测 RED (Random Early Detection)",
+          "score": 1.0,
+          "relevance": 0.5441,
+          "coverage": 0.4,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 709,
+          "heading": "3.3.3 使用集线器的星形拓扑",
+          "score": 0.994,
+          "relevance": 0.5625,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 957,
+          "heading": "举例说明",
+          "score": 0.6093,
+          "relevance": 0.6649,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 681,
+      "relevance_top1": 0.6862,
+      "unknown_ratio": 0.2,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "接收方处理不过来数据怎么办",
+      "gold": [
+        952
+      ],
+      "latency_ms": 343,
+      "top": [
+        {
+          "chunk_id": 944,
+          "heading": "接收缓存",
+          "score": 1.0,
+          "relevance": 0.6751,
+          "coverage": 0.625,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 731,
+          "heading": "（1）以太网交换机的特点",
+          "score": 0.9549,
+          "relevance": 0.6241,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 912,
+          "heading": "5.4.1 停止等待协议",
+          "score": 0.9463,
+          "relevance": 0.6528,
+          "coverage": 0.375,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 938,
+      "relevance_top1": 0.6754,
+      "unknown_ratio": 0.375,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "地址不够用怎么让很多机器共用一个公网地址",
+      "gold": [
+        890,
+        899
+      ],
+      "latency_ms": 338,
+      "top": [
+        {
+          "chunk_id": 715,
+          "heading": "（1）MAC地址",
+          "score": 1.0,
+          "relevance": 0.5871,
+          "coverage": 0.3,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 890,
+          "heading": "4.8.2 网络地址转换 NAT",
+          "score": 0.9581,
+          "relevance": 0.6016,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 779,
+          "heading": "IP 地址的特点",
+          "score": 0.9436,
+          "relevance": 0.5842,
+          "coverage": 0.3,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 816,
+      "relevance_top1": 0.669,
+      "unknown_ratio": 0.3,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "交换机怎么知道该把帧从哪个口发出去",
+      "gold": [
+        737
+      ],
+      "latency_ms": 348,
+      "top": [
+        {
+          "chunk_id": 731,
+          "heading": "（1）以太网交换机的特点",
+          "score": 1.0,
+          "relevance": 0.7726,
+          "coverage": 0.4615,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 730,
+          "heading": "3.4.2 在数据链路层扩展以太网",
+          "score": 0.9919,
+          "relevance": 0.7788,
+          "coverage": 0.3846,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 738,
+          "heading": "（3）以太网交换机的优点",
+          "score": 0.9863,
+          "relevance": 0.7619,
+          "coverage": 0.3077,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 733,
+      "relevance_top1": 0.8372,
+      "unknown_ratio": 0.1538,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "为什么很小的帧会被当成碰撞丢弃",
+      "gold": [
+        704,
+        703
+      ],
+      "latency_ms": 348,
+      "top": [
+        {
+          "chunk_id": 709,
+          "heading": "3.3.3 使用集线器的星形拓扑",
+          "score": 1.0,
+          "relevance": 0.6995,
+          "coverage": 0.4444,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 977,
+          "heading": "5.8.3 随机早期检测 RED (Random Early Detection)",
+          "score": 0.9402,
+          "relevance": 0.6637,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 681,
+          "heading": "（1）封装成帧",
+          "score": 0.929,
+          "relevance": 0.6862,
+          "coverage": 0.2222,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 709,
+      "relevance_top1": 0.6995,
+      "unknown_ratio": 0.1111,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "接收窗口变成 0 之后双方会不会一直死等",
+      "gold": [
+        954
+      ],
+      "latency_ms": 351,
+      "top": [
+        {
+          "chunk_id": 944,
+          "heading": "接收缓存",
+          "score": 1.0,
+          "relevance": 0.6259,
+          "coverage": 0.3,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 954,
+          "heading": "持续计时器(persistence timer)。",
+          "score": 0.9418,
+          "relevance": 0.6388,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 689,
+          "heading": "零比特填充",
+          "score": 0.9416,
+          "relevance": 0.5791,
+          "coverage": 0.3,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 940,
+      "relevance_top1": 0.6425,
+      "unknown_ratio": 0.1,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "路由器是怎么一步步把包送到隔壁网络去的",
+      "gold": [
+        812
+      ],
+      "latency_ms": 348,
+      "top": [
+        {
+          "chunk_id": 805,
+          "heading": "路由表举例：路由器A的路由表",
+          "score": 1.0,
+          "relevance": 0.6701,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 868,
+          "heading": "距离向量算法（路由）",
+          "score": 0.9929,
+          "relevance": 0.6494,
+          "coverage": 0.25,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 877,
+          "heading": "“坏消息传播慢”举例",
+          "score": 0.9567,
+          "relevance": 0.6234,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 805,
+      "relevance_top1": 0.6701,
+      "unknown_ratio": 0.5,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "一台电脑插了两根网线会有两个地址吗",
+      "gold": [
+        778
+      ],
+      "latency_ms": 350,
+      "top": [
+        {
+          "chunk_id": 778,
+          "heading": "IP 地址的特点",
+          "score": 1.0,
+          "relevance": 0.691,
+          "coverage": 0.2222,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 759,
+          "heading": "4.2.2 分类的 IP 地址",
+          "score": 0.9394,
+          "relevance": 0.65,
+          "coverage": 0.2222,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1023,
+          "heading": "域名的解析过程",
+          "score": 0.9178,
+          "relevance": 0.6421,
+          "coverage": 0.1111,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 778,
+      "relevance_top1": 0.691,
+      "unknown_ratio": 0.5556,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "邮件是怎么从我这边跑到对方邮箱里的",
+      "gold": [
+        1054,
+        1055,
+        1074
+      ],
+      "latency_ms": 344,
+      "top": [
+        {
+          "chunk_id": 1062,
+          "heading": "常见的状态码和短语",
+          "score": 1.0,
+          "relevance": 0.6745,
+          "coverage": 0.3,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1059,
+          "heading": "常见的状态码和短语",
+          "score": 0.9215,
+          "relevance": 0.652,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1056,
+          "heading": "常见的状态码和短语",
+          "score": 0.9173,
+          "relevance": 0.6274,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 1062,
+      "relevance_top1": 0.6745,
+      "unknown_ratio": 0.3,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "在浏览器里输完网址背后先查什么",
+      "gold": [
+        1002,
+        1013
+      ],
+      "latency_ms": 337,
+      "top": [
+        {
+          "chunk_id": 943,
+          "heading": "接收缓存",
+          "score": 1.0,
+          "relevance": 0.5738,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 1038,
+          "heading": "6.4.3 超文本传送协议 HTTP",
+          "score": 1.0,
+          "relevance": 0.7146,
+          "coverage": 0.25,
+          "rerank_score": null,
+          "source": "sparse"
+        },
+        {
+          "chunk_id": 892,
+          "heading": "网络地址转换的过程",
+          "score": 0.9839,
+          "relevance": 0.5573,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 1038,
+      "relevance_top1": 0.7146,
+      "unknown_ratio": 0.5,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "手机连上 wifi 自动就有地址是谁给的",
+      "gold": [
+        1085,
+        1090
+      ],
+      "latency_ms": 346,
+      "top": [
+        {
+          "chunk_id": 757,
+          "heading": "IP 地址与编址方法",
+          "score": 1.0,
+          "relevance": 0.6111,
+          "coverage": 0.2857,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 782,
+          "heading": "给下面设备编址",
+          "score": 1.0,
+          "relevance": 0.5704,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 780,
+          "heading": "IP编址",
+          "score": 0.9938,
+          "relevance": 0.5623,
+          "coverage": 0.2857,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 892,
+      "relevance_top1": 0.6341,
+      "unknown_ratio": 0.5714,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "传文件传到一半丢了一个包会怎么样",
+      "gold": [
+        914
+      ],
+      "latency_ms": 344,
+      "top": [
+        {
+          "chunk_id": 691,
+          "heading": "最大传输单元 MTU",
+          "score": 1.0,
+          "relevance": 0.5896,
+          "coverage": 0.1111,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1027,
+          "heading": "域名的解析过程",
+          "score": 0.9765,
+          "relevance": 0.5563,
+          "coverage": 0.1111,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1018,
+          "heading": "域名的解析过程",
+          "score": 0.9725,
+          "relevance": 0.6639,
+          "coverage": 0.2222,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 1018,
+      "relevance_top1": 0.6639,
+      "unknown_ratio": 0.4444,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "为什么关闭连接比建立连接多一次确认",
+      "gold": [
+        996
+      ],
+      "latency_ms": 343,
+      "top": [
+        {
+          "chunk_id": 987,
+          "heading": "客户服务器方式",
+          "score": 1.0,
+          "relevance": 0.6446,
+          "coverage": 0.4,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 986,
+          "heading": "客户服务器方式",
+          "score": 0.9919,
+          "relevance": 0.6351,
+          "coverage": 0.4,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 996,
+          "heading": "客户服务器方式",
+          "score": 0.9676,
+          "relevance": 0.5988,
+          "coverage": 0.3,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 987,
+      "relevance_top1": 0.6446,
+      "unknown_ratio": 0.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "口语",
+      "query": "一个 IP 包太大过不去会怎么办",
+      "gold": [
+        796,
+        797
+      ],
+      "latency_ms": 338,
+      "top": [
+        {
+          "chunk_id": 712,
+          "heading": "3.3.3 使用集线器的星形拓扑",
+          "score": 1.0,
+          "relevance": 0.5896,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 946,
+          "heading": "接收缓存",
+          "score": 0.9662,
+          "relevance": 0.5743,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 756,
+          "heading": "4.2 网际协议IP（Internet Protocol)",
+          "score": 0.8468,
+          "relevance": 0.5691,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 852,
+      "relevance_top1": 0.6331,
+      "unknown_ratio": 0.5714,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "three-way handshake states",
+      "gold": [
+        987,
+        993,
+        992
+      ],
+      "latency_ms": 342,
+      "top": [
+        {
+          "chunk_id": 989,
+          "heading": "客户服务器方式",
+          "score": 1.0,
+          "relevance": 0.5949,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 990,
+          "heading": "客户服务器方式",
+          "score": 0.9839,
+          "relevance": 0.5472,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 983,
+          "heading": "客户服务器方式",
+          "score": 0.9683,
+          "relevance": 0.542,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 989,
+      "relevance_top1": 0.5949,
+      "unknown_ratio": 1.0,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "congestion control slow start cwnd",
+      "gold": [
+        954,
+        961
+      ],
+      "latency_ms": 347,
+      "top": [
+        {
+          "chunk_id": 959,
+          "heading": "5.8.2 几种拥塞控制方法1. 慢开始和拥塞避免",
+          "score": 1.0,
+          "relevance": 0.571,
+          "coverage": 0.4,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 966,
+          "heading": "慢开始和拥塞避免算法的实现举例",
+          "score": 0.9791,
+          "relevance": 0.6152,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 967,
+          "heading": "慢开始和拥塞避免算法的实现举例",
+          "score": 0.9775,
+          "relevance": 0.5964,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 966,
+      "relevance_top1": 0.6152,
+      "unknown_ratio": 0.2,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "how to compute the network address from a subnet mask",
+      "gold": [
+        821,
+        822,
+        823
+      ],
+      "latency_ms": 355,
+      "top": [
+        {
+          "chunk_id": 892,
+          "heading": "网络地址转换的过程",
+          "score": 1.0,
+          "relevance": 0.5804,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 898,
+          "heading": "复用地址转换",
+          "score": 1.0,
+          "relevance": 0.6391,
+          "coverage": 0.2857,
+          "rerank_score": null,
+          "source": "sparse"
+        },
+        {
+          "chunk_id": 835,
+          "heading": "分析主机H1向主机H2发送的分组如何到达目的主机。",
+          "score": 0.9839,
+          "relevance": 0.555,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 898,
+      "relevance_top1": 0.6391,
+      "unknown_ratio": 0.4286,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "longest prefix matching in routing",
+      "gold": [
+        849
+      ],
+      "latency_ms": 348,
+      "top": [
+        {
+          "chunk_id": 862,
+          "heading": "4.6.2 内部网关协议 RIP (Routing Information Protocol)",
+          "score": 1.0,
+          "relevance": 0.4755,
+          "coverage": 0.25,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 847,
+          "heading": "最长前缀匹配",
+          "score": 0.5448,
+          "relevance": 0.6004,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 846,
+          "heading": "最长前缀匹配",
+          "score": 0.536,
+          "relevance": 0.5881,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 847,
+      "relevance_top1": 0.6004,
+      "unknown_ratio": 0.75,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "CSMA/CD collision detection and minimum frame size",
+      "gold": [
+        701,
+        699,
+        704,
+        703
+      ],
+      "latency_ms": 342,
+      "top": [
+        {
+          "chunk_id": 705,
+          "heading": "3.3.2 CSMA/CD协议",
+          "score": 1.0,
+          "relevance": 0.6303,
+          "coverage": 0.2857,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 699,
+          "heading": "3.3.2 CSMA/CD协议",
+          "score": 0.969,
+          "relevance": 0.5941,
+          "coverage": 0.2857,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 704,
+          "heading": "3.3.2 CSMA/CD协议",
+          "score": 0.9575,
+          "relevance": 0.6334,
+          "coverage": 0.2857,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 704,
+      "relevance_top1": 0.6334,
+      "unknown_ratio": 0.5714,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "DNS recursive query vs iterative query",
+      "gold": [
+        1013
+      ],
+      "latency_ms": 355,
+      "top": [
+        {
+          "chunk_id": 1014,
+          "heading": "DNS查询示例",
+          "score": 1.0,
+          "relevance": 0.5573,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1000,
+          "heading": "6.1.1 域名系统概述",
+          "score": 0.9685,
+          "relevance": 0.5219,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1013,
+          "heading": "域名的解析过程",
+          "score": 0.963,
+          "relevance": 0.548,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 1014,
+      "relevance_top1": 0.5573,
+      "unknown_ratio": 0.8333,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "how NAT multiplexes one public IP with ports",
+      "gold": [
+        899
+      ],
+      "latency_ms": 346,
+      "top": [
+        {
+          "chunk_id": 893,
+          "heading": "NAT地址转换分类",
+          "score": 1.0,
+          "relevance": 0.569,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 896,
+          "heading": "静态地址转换",
+          "score": 0.9923,
+          "relevance": 0.5805,
+          "coverage": 0.2857,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 897,
+          "heading": "动态地址转换",
+          "score": 0.9787,
+          "relevance": 0.6037,
+          "coverage": 0.2857,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 897,
+      "relevance_top1": 0.6037,
+      "unknown_ratio": 0.5714,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "sliding window flow control",
+      "gold": [
+        952
+      ],
+      "latency_ms": 338,
+      "top": [
+        {
+          "chunk_id": 952,
+          "heading": "5.7 TCP 的流量控制5.7.1 利用滑动窗口实现流量控制",
+          "score": 1.0,
+          "relevance": 0.6082,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 959,
+          "heading": "5.8.2 几种拥塞控制方法1. 慢开始和拥塞避免",
+          "score": 0.9683,
+          "relevance": 0.5376,
+          "coverage": 0.25,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 939,
+          "heading": "5.6.1 以字节为单位的滑动窗口",
+          "score": 0.4919,
+          "relevance": 0.5453,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 952,
+      "relevance_top1": 0.6082,
+      "unknown_ratio": 0.25,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "RIP hop count and unreachable 16",
+      "gold": [
+        866
+      ],
+      "latency_ms": 348,
+      "top": [
+        {
+          "chunk_id": 866,
+          "heading": "距离向量算法（路由）",
+          "score": 1.0,
+          "relevance": 0.5681,
+          "coverage": 0.4,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 864,
+          "heading": "“距离”的定义",
+          "score": 0.9992,
+          "relevance": 0.6016,
+          "coverage": 0.4,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 871,
+          "heading": "RIP 协议的优缺点",
+          "score": 0.999,
+          "relevance": 0.5774,
+          "coverage": 0.4,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 864,
+      "relevance_top1": 0.6016,
+      "unknown_ratio": 0.2,
+      "accepted": true,
+      "hit@1": true,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "跨语言",
+      "query": "DHCP lease renewal timers T1 and T2",
+      "gold": [
+        1091
+      ],
+      "latency_ms": 358,
+      "top": [
+        {
+          "chunk_id": 1090,
+          "heading": "DHCP 协议的工作过程",
+          "score": 1.0,
+          "relevance": 0.6354,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1091,
+          "heading": "DHCP 协议的工作过程",
+          "score": 0.9839,
+          "relevance": 0.5857,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1092,
+          "heading": "DHCP 协议的工作过程",
+          "score": 0.9318,
+          "relevance": 0.5421,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 1090,
+      "relevance_top1": 0.6354,
+      "unknown_ratio": 0.5,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": true,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "数据库 B+ 树索引的分裂过程",
+      "gold": [],
+      "latency_ms": 347,
+      "top": [
+        {
+          "chunk_id": 885,
+          "heading": "“坏消息传播慢”举例",
+          "score": 1.0,
+          "relevance": 0.6629,
+          "coverage": 0.375,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 892,
+          "heading": "网络地址转换的过程",
+          "score": 0.9495,
+          "relevance": 0.5195,
+          "coverage": 0.125,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1015,
+          "heading": "域名的解析过程",
+          "score": 0.9346,
+          "relevance": 0.4711,
+          "coverage": 0.25,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 885,
+      "relevance_top1": 0.6629,
+      "unknown_ratio": 0.25,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "操作系统进程调度的时间片轮转算法怎么实现",
+      "gold": [],
+      "latency_ms": 346,
+      "top": [
+        {
+          "chunk_id": 967,
+          "heading": "慢开始和拥塞避免算法的实现举例",
+          "score": 1.0,
+          "relevance": 0.5257,
+          "coverage": 0.1818,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 966,
+          "heading": "慢开始和拥塞避免算法的实现举例",
+          "score": 0.9661,
+          "relevance": 0.5245,
+          "coverage": 0.1818,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 962,
+          "heading": "设置慢开始门限状态变量ssthresh",
+          "score": 0.8779,
+          "relevance": 0.502,
+          "coverage": 0.0909,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 1020,
+      "relevance_top1": 0.7373,
+      "unknown_ratio": 0.2727,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "编译原理中 SSA 形式是什么",
+      "gold": [],
+      "latency_ms": 350,
+      "top": [
+        {
+          "chunk_id": 721,
+          "heading": "（1）MAC 地址",
+          "score": 1.0,
+          "relevance": 0.4563,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 681,
+          "heading": "（1）封装成帧",
+          "score": 0.9731,
+          "relevance": 0.4949,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 960,
+          "heading": "慢开始算法的原理",
+          "score": 0.8517,
+          "relevance": 0.4111,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 1035,
+      "relevance_top1": 0.5195,
+      "unknown_ratio": 0.4,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "Vue 的响应式原理是怎么实现的",
+      "gold": [],
+      "latency_ms": 346,
+      "top": [
+        {
+          "chunk_id": 1041,
+          "heading": "持续连接",
+          "score": 1.0,
+          "relevance": 0.4553,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1033,
+          "heading": "6.4 万维网 WWW6.4.1 万维网概述",
+          "score": 0.9055,
+          "relevance": 0.4391,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 976,
+          "heading": "快恢复算法",
+          "score": 0.5369,
+          "relevance": 0.4746,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 1046,
+      "relevance_top1": 0.525,
+      "unknown_ratio": 0.3333,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "红烧肉的正宗做法",
+      "gold": [],
+      "latency_ms": 351,
+      "top": [
+        {
+          "chunk_id": 679,
+          "heading": "3.1.2 三个基本问题",
+          "score": 1.0,
+          "relevance": 0.3715,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 976,
+          "heading": "快恢复算法",
+          "score": 0.9839,
+          "relevance": 0.3665,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 942,
+          "heading": "发送缓存",
+          "score": 0.9683,
+          "relevance": 0.3582,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 679,
+      "relevance_top1": 0.3715,
+      "unknown_ratio": 1.0,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "矩阵特征值分解的几何意义",
+      "gold": [],
+      "latency_ms": 339,
+      "top": [
+        {
+          "chunk_id": 796,
+          "heading": "4.2.5 IP 数据报的格式",
+          "score": 1.0,
+          "relevance": 0.4823,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 774,
+          "heading": "一些特殊的IP地址",
+          "score": 0.5081,
+          "relevance": 0.4432,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "sparse"
+        },
+        {
+          "chunk_id": 797,
+          "heading": "4.2.5 IP 数据报的格式",
+          "score": 0.4999,
+          "relevance": 0.45,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 796,
+      "relevance_top1": 0.4823,
+      "unknown_ratio": 0.8333,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "快速排序的平均时间复杂度为什么是 O(nlogn)",
+      "gold": [],
+      "latency_ms": 357,
+      "top": [
+        {
+          "chunk_id": 951,
+          "heading": "接收缓存",
+          "score": 1.0,
+          "relevance": 0.5259,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 950,
+          "heading": "接收缓存",
+          "score": 0.9908,
+          "relevance": 0.5614,
+          "coverage": 0.2,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 978,
+          "heading": "RED算法",
+          "score": 0.9848,
+          "relevance": 0.5066,
+          "coverage": 0.1,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 948,
+      "relevance_top1": 0.5818,
+      "unknown_ratio": 0.4,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "区块链的共识机制有哪几种",
+      "gold": [],
+      "latency_ms": 351,
+      "top": [
+        {
+          "chunk_id": 914,
+          "heading": "5.4.1 停止等待协议",
+          "score": 1.0,
+          "relevance": 0.4746,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 861,
+          "heading": "自治系统和内部网关协议、外部网关协议",
+          "score": 0.5344,
+          "relevance": 0.5315,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 860,
+          "heading": "4.6 因特网的路由选择协议4.6.1 有关路由选择协议的几个基本概念",
+          "score": 0.5257,
+          "relevance": 0.5031,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 861,
+      "relevance_top1": 0.5315,
+      "unknown_ratio": 0.7143,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "有监督学习和无监督学习的区别",
+      "gold": [],
+      "latency_ms": 333,
+      "top": [
+        {
+          "chunk_id": 741,
+          "heading": "（3）以太网交换机的优点",
+          "score": 1.0,
+          "relevance": 0.3916,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 693,
+          "heading": "循环冗余检验CRC",
+          "score": 0.5778,
+          "relevance": 0.4483,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 738,
+          "heading": "（3）以太网交换机的优点",
+          "score": 0.5778,
+          "relevance": 0.7499,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "sparse"
+        }
+      ],
+      "gate_chunk": 738,
+      "relevance_top1": 0.7499,
+      "unknown_ratio": 0.3333,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "股票的市盈率怎么计算",
+      "gold": [],
+      "latency_ms": 347,
+      "top": [
+        {
+          "chunk_id": 978,
+          "heading": "RED算法",
+          "score": 1.0,
+          "relevance": 0.4367,
+          "coverage": 0.25,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 711,
+          "heading": "3.3.3 使用集线器的星形拓扑",
+          "score": 0.623,
+          "relevance": 0.4657,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 907,
+          "heading": "5.2.2 UDP 的首部格式",
+          "score": 0.623,
+          "relevance": 0.463,
+          "coverage": 0.25,
+          "rerank_score": null,
+          "source": "sparse"
+        }
+      ],
+      "gate_chunk": 711,
+      "relevance_top1": 0.4657,
+      "unknown_ratio": 0.75,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "光合作用的暗反应发生在哪里",
+      "gold": [],
+      "latency_ms": 352,
+      "top": [
+        {
+          "chunk_id": 700,
+          "heading": "3.3.2 CSMA/CD协议",
+          "score": 1.0,
+          "relevance": 0.4569,
+          "coverage": 0.125,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 958,
+          "heading": "举例说明",
+          "score": 0.9562,
+          "relevance": 0.5081,
+          "coverage": 0.125,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 736,
+          "heading": "习题：依据动作补充交换表和转发过程",
+          "score": 0.4959,
+          "relevance": 0.3834,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 958,
+      "relevance_top1": 0.5081,
+      "unknown_ratio": 0.75,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "明朝内阁制和宰相制有什么区别",
+      "gold": [],
+      "latency_ms": 343,
+      "top": [
+        {
+          "chunk_id": 681,
+          "heading": "（1）封装成帧",
+          "score": 1.0,
+          "relevance": 0.4949,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1000,
+          "heading": "6.1.1 域名系统概述",
+          "score": 0.9482,
+          "relevance": 0.4186,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 1080,
+          "heading": "常见的状态码和短语",
+          "score": 0.5379,
+          "relevance": 0.338,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 681,
+      "relevance_top1": 0.4949,
+      "unknown_ratio": 0.7143,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "天空为什么是蓝色的",
+      "gold": [],
+      "latency_ms": 334,
+      "top": [
+        {
+          "chunk_id": 681,
+          "heading": "（1）封装成帧",
+          "score": 1.0,
+          "relevance": 0.6862,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 939,
+          "heading": "5.6.1 以字节为单位的滑动窗口",
+          "score": 0.5515,
+          "relevance": 0.3888,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 998,
+          "heading": "客户服务器方式",
+          "score": 0.5426,
+          "relevance": 0.3855,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 681,
+      "relevance_top1": 0.6862,
+      "unknown_ratio": 0.5,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "Python 的 GIL 是什么",
+      "gold": [],
+      "latency_ms": 344,
+      "top": [
+        {
+          "chunk_id": 866,
+          "heading": "距离向量算法（路由）",
+          "score": 1.0,
+          "relevance": 0.4088,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 862,
+          "heading": "4.6.2 内部网关协议 RIP (Routing Information Protocol)",
+          "score": 0.5323,
+          "relevance": 0.4148,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 681,
+          "heading": "（1）封装成帧",
+          "score": 0.5323,
+          "relevance": 0.4949,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "sparse"
+        }
+      ],
+      "gate_chunk": 681,
+      "relevance_top1": 0.4949,
+      "unknown_ratio": 0.6667,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "微服务如何做服务熔断",
+      "gold": [],
+      "latency_ms": 351,
+      "top": [
+        {
+          "chunk_id": 1095,
+          "heading": "DHCP 协议的工作过程",
+          "score": 1.0,
+          "relevance": 0.5078,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 942,
+          "heading": "发送缓存",
+          "score": 0.5573,
+          "relevance": 0.5628,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 1001,
+          "heading": "6.1.1 域名系统概述",
+          "score": 0.5573,
+          "relevance": 0.5254,
+          "coverage": 0.5,
+          "rerank_score": null,
+          "source": "sparse"
+        }
+      ],
+      "gate_chunk": 942,
+      "relevance_top1": 0.5628,
+      "unknown_ratio": 0.3333,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "手冲咖啡的水温应该控制在多少度",
+      "gold": [],
+      "latency_ms": 345,
+      "top": [
+        {
+          "chunk_id": 952,
+          "heading": "5.7 TCP 的流量控制5.7.1 利用滑动窗口实现流量控制",
+          "score": 1.0,
+          "relevance": 0.454,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 958,
+          "heading": "举例说明",
+          "score": 0.9143,
+          "relevance": 0.4295,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 700,
+          "heading": "3.3.2 CSMA/CD协议",
+          "score": 0.512,
+          "relevance": 0.5468,
+          "coverage": 0.1429,
+          "rerank_score": null,
+          "source": "sparse"
+        }
+      ],
+      "gate_chunk": 700,
+      "relevance_top1": 0.5468,
+      "unknown_ratio": 0.5714,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "热力学第二定律和熵增的关系",
+      "gold": [],
+      "latency_ms": 348,
+      "top": [
+        {
+          "chunk_id": 875,
+          "heading": "“坏消息传播慢”举例",
+          "score": 1.0,
+          "relevance": 0.4246,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 997,
+          "heading": "客户服务器方式",
+          "score": 1.0,
+          "relevance": 0.5088,
+          "coverage": 0.125,
+          "rerank_score": null,
+          "source": "sparse"
+        },
+        {
+          "chunk_id": 958,
+          "heading": "举例说明",
+          "score": 0.9839,
+          "relevance": 0.4205,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 997,
+      "relevance_top1": 0.5088,
+      "unknown_ratio": 0.75,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "5G 和 4G 在物理层有什么区别",
+      "gold": [],
+      "latency_ms": 345,
+      "top": [
+        {
+          "chunk_id": 707,
+          "heading": "3.3.3 使用集线器的星形拓扑",
+          "score": 1.0,
+          "relevance": 0.5827,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 727,
+          "heading": "3.4.1 在物理层扩展以太网",
+          "score": 0.9764,
+          "relevance": 0.5821,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 726,
+          "heading": "3.4 扩展的以太网3.4.1 在物理层扩展以太网",
+          "score": 0.9497,
+          "relevance": 0.604,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "both"
+        }
+      ],
+      "gate_chunk": 726,
+      "relevance_top1": 0.604,
+      "unknown_ratio": 0.3333,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "如何用 CSS 实现垂直居中",
+      "gold": [],
+      "latency_ms": 350,
+      "top": [
+        {
+          "chunk_id": 688,
+          "heading": "（2）透明传输",
+          "score": 1.0,
+          "relevance": 0.4182,
+          "coverage": 0.1667,
+          "rerank_score": null,
+          "source": "both"
+        },
+        {
+          "chunk_id": 870,
+          "heading": "距离向量算法（路由）",
+          "score": 0.5614,
+          "relevance": 0.4613,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 1001,
+          "heading": "6.1.1 域名系统概述",
+          "score": 0.5614,
+          "relevance": 0.5247,
+          "coverage": 0.3333,
+          "rerank_score": null,
+          "source": "sparse"
+        }
+      ],
+      "gate_chunk": 1001,
+      "relevance_top1": 0.5247,
+      "unknown_ratio": 0.5,
+      "accepted": true,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    },
+    {
+      "category": "领域外",
+      "query": "线性回归的 L1 和 L2 正则化有什么区别",
+      "gold": [],
+      "latency_ms": 355,
+      "top": [
+        {
+          "chunk_id": 874,
+          "heading": "“坏消息传播慢”举例",
+          "score": 1.0,
+          "relevance": 0.4769,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        },
+        {
+          "chunk_id": 681,
+          "heading": "（1）封装成帧",
+          "score": 1.0,
+          "relevance": 0.4949,
+          "coverage": 0.125,
+          "rerank_score": null,
+          "source": "sparse"
+        },
+        {
+          "chunk_id": 873,
+          "heading": "“坏消息传播慢”举例",
+          "score": 0.9839,
+          "relevance": 0.4736,
+          "coverage": 0.0,
+          "rerank_score": null,
+          "source": "dense"
+        }
+      ],
+      "gate_chunk": 681,
+      "relevance_top1": 0.4949,
+      "unknown_ratio": 0.625,
+      "accepted": false,
+      "hit@1": false,
+      "hit@3": false,
+      "error": null
+    }
+  ]
+}

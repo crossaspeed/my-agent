@@ -1,0 +1,1342 @@
+[
+  {
+    "id": 308,
+    "document_id": 19,
+    "chunk_index": 0,
+    "char_start": 0,
+    "char_end": 555,
+    "slide_no": 1,
+    "heading": "数据链路层的简单模型",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 309,
+    "document_id": 19,
+    "chunk_index": 1,
+    "char_start": 473,
+    "char_end": 1073,
+    "slide_no": 8,
+    "heading": "（1）封装成帧",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 310,
+    "document_id": 19,
+    "chunk_index": 2,
+    "char_start": 1000,
+    "char_end": 1584,
+    "slide_no": 15,
+    "heading": "零比特填充",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 311,
+    "document_id": 19,
+    "chunk_index": 3,
+    "char_start": 1532,
+    "char_end": 2060,
+    "slide_no": 18,
+    "heading": "循环冗余检验CRC",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 312,
+    "document_id": 19,
+    "chunk_index": 4,
+    "char_start": 2002,
+    "char_end": 2581,
+    "slide_no": 21,
+    "heading": "循环冗余检验CRC",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 313,
+    "document_id": 19,
+    "chunk_index": 5,
+    "char_start": 2481,
+    "char_end": 3040,
+    "slide_no": 25,
+    "heading": "3.3.2 CSMA/CD协议",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 314,
+    "document_id": 19,
+    "chunk_index": 6,
+    "char_start": 2975,
+    "char_end": 3529,
+    "slide_no": 28,
+    "heading": "3.3.2 CSMA/CD协议",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 315,
+    "document_id": 19,
+    "chunk_index": 7,
+    "char_start": 3473,
+    "char_end": 4067,
+    "slide_no": 31,
+    "heading": "3.3.2 CSMA/CD协议",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 316,
+    "document_id": 19,
+    "chunk_index": 8,
+    "char_start": 3967,
+    "char_end": 4540,
+    "slide_no": 34,
+    "heading": "3.3.3 使用集线器的星形拓扑",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 317,
+    "document_id": 19,
+    "chunk_index": 9,
+    "char_start": 4471,
+    "char_end": 5022,
+    "slide_no": 38,
+    "heading": "3.3.3 使用集线器的星形拓扑",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 318,
+    "document_id": 19,
+    "chunk_index": 10,
+    "char_start": 4962,
+    "char_end": 5502,
+    "slide_no": 41,
+    "heading": "（1）MAC地址",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 319,
+    "document_id": 19,
+    "chunk_index": 11,
+    "char_start": 5402,
+    "char_end": 5944,
+    "slide_no": 44,
+    "heading": "（1）MAC 地址",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 320,
+    "document_id": 19,
+    "chunk_index": 12,
+    "char_start": 5857,
+    "char_end": 6423,
+    "slide_no": 51,
+    "heading": "（2）MAC 帧的格式",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 321,
+    "document_id": 19,
+    "chunk_index": 13,
+    "char_start": 6340,
+    "char_end": 6874,
+    "slide_no": 56,
+    "heading": "3.4.2 在数据链路层扩展以太网",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 322,
+    "document_id": 19,
+    "chunk_index": 14,
+    "char_start": 6789,
+    "char_end": 7345,
+    "slide_no": 61,
+    "heading": "（2）以太网交换机的工作原理",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 323,
+    "document_id": 19,
+    "chunk_index": 15,
+    "char_start": 7259,
+    "char_end": 7835,
+    "slide_no": 67,
+    "heading": "（3）以太网交换机的优点",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 324,
+    "document_id": 19,
+    "chunk_index": 16,
+    "char_start": 7783,
+    "char_end": 8235,
+    "slide_no": 71,
+    "heading": "虚拟局域网的以太网帧格式",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 325,
+    "document_id": 19,
+    "chunk_index": 17,
+    "char_start": 8157,
+    "char_end": 8757,
+    "slide_no": 76,
+    "heading": "3.5.1 100BASE-T 以太网",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 326,
+    "document_id": 19,
+    "chunk_index": 18,
+    "char_start": 8668,
+    "char_end": 8975,
+    "slide_no": 78,
+    "heading": "3.5.2 吉比特以太网",
+    "filename": "ch3_数据链路层.pptx"
+  },
+  {
+    "id": 327,
+    "document_id": 20,
+    "chunk_index": 0,
+    "char_start": 0,
+    "char_end": 583,
+    "slide_no": 1,
+    "heading": "网络层的功能",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 328,
+    "document_id": 20,
+    "chunk_index": 1,
+    "char_start": 524,
+    "char_end": 1032,
+    "slide_no": 5,
+    "heading": "IP 地址与编址方法",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 329,
+    "document_id": 20,
+    "chunk_index": 2,
+    "char_start": 943,
+    "char_end": 1507,
+    "slide_no": 10,
+    "heading": "4.2.2 分类的 IP 地址",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 330,
+    "document_id": 20,
+    "chunk_index": 3,
+    "char_start": 1407,
+    "char_end": 1973,
+    "slide_no": 12,
+    "heading": "4.2.2 分类的 IP 地址",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 331,
+    "document_id": 20,
+    "chunk_index": 4,
+    "char_start": 1873,
+    "char_end": 2453,
+    "slide_no": 14,
+    "heading": "4.2.2 分类的 IP 地址",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 332,
+    "document_id": 20,
+    "chunk_index": 5,
+    "char_start": 2353,
+    "char_end": 2928,
+    "slide_no": 16,
+    "heading": "4.2.2 分类的 IP 地址",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 333,
+    "document_id": 20,
+    "chunk_index": 6,
+    "char_start": 2828,
+    "char_end": 3417,
+    "slide_no": 18,
+    "heading": "4.2.2 分类的 IP 地址",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 334,
+    "document_id": 20,
+    "chunk_index": 7,
+    "char_start": 3317,
+    "char_end": 3894,
+    "slide_no": 20,
+    "heading": "4.2.2 分类的 IP 地址",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 335,
+    "document_id": 20,
+    "chunk_index": 8,
+    "char_start": 3795,
+    "char_end": 4273,
+    "slide_no": 22,
+    "heading": "一些特殊的IP地址",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 336,
+    "document_id": 20,
+    "chunk_index": 9,
+    "char_start": 4273,
+    "char_end": 4364,
+    "slide_no": 25,
+    "heading": "IP 地址的特点",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 337,
+    "document_id": 20,
+    "chunk_index": 10,
+    "char_start": 4365,
+    "char_end": 4948,
+    "slide_no": 26,
+    "heading": "IP 地址的特点",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 338,
+    "document_id": 20,
+    "chunk_index": 11,
+    "char_start": 4860,
+    "char_end": 5453,
+    "slide_no": 32,
+    "heading": "例：R1通过接口0将IP数据报交付给目的地址为209.0.0.6的主机B",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 339,
+    "document_id": 20,
+    "chunk_index": 12,
+    "char_start": 5353,
+    "char_end": 5937,
+    "slide_no": 36,
+    "heading": "4.2.5 IP 数据报的格式",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 340,
+    "document_id": 20,
+    "chunk_index": 13,
+    "char_start": 5871,
+    "char_end": 6447,
+    "slide_no": 41,
+    "heading": "4.2.5 IP 数据报的格式",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 341,
+    "document_id": 20,
+    "chunk_index": 14,
+    "char_start": 6388,
+    "char_end": 6715,
+    "slide_no": 44,
+    "heading": "4.2.5 IP 数据报的格式",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 342,
+    "document_id": 20,
+    "chunk_index": 15,
+    "char_start": 6715,
+    "char_end": 6907,
+    "slide_no": 46,
+    "heading": "【例】 IP 数据报分片",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 343,
+    "document_id": 20,
+    "chunk_index": 16,
+    "char_start": 6908,
+    "char_end": 7449,
+    "slide_no": 47,
+    "heading": "【例】 IP 数据报分片",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 344,
+    "document_id": 20,
+    "chunk_index": 17,
+    "char_start": 7372,
+    "char_end": 7918,
+    "slide_no": 52,
+    "heading": "4.2.6 IP 层转发分组的流程",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 345,
+    "document_id": 20,
+    "chunk_index": 18,
+    "char_start": 7835,
+    "char_end": 8427,
+    "slide_no": 58,
+    "heading": "路由的类型",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 346,
+    "document_id": 20,
+    "chunk_index": 19,
+    "char_start": 8375,
+    "char_end": 8958,
+    "slide_no": 62,
+    "heading": "分组转发算法",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 347,
+    "document_id": 20,
+    "chunk_index": 20,
+    "char_start": 8871,
+    "char_end": 9401,
+    "slide_no": 69,
+    "heading": "子网掩码的规定",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 348,
+    "document_id": 20,
+    "chunk_index": 21,
+    "char_start": 9305,
+    "char_end": 9856,
+    "slide_no": 71,
+    "heading": "默认子网掩码",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 349,
+    "document_id": 20,
+    "chunk_index": 22,
+    "char_start": 9773,
+    "char_end": 10295,
+    "slide_no": 72,
+    "heading": "【例2】在上例中，若子网掩码改为255.255.224.0。试求网络地址，讨论所得结果。",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 350,
+    "document_id": 20,
+    "chunk_index": 23,
+    "char_start": 10295,
+    "char_end": 10454,
+    "slide_no": 75,
+    "heading": "使用子网掩码的分组转发过程",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 351,
+    "document_id": 20,
+    "chunk_index": 24,
+    "char_start": 10455,
+    "char_end": 10679,
+    "slide_no": 75,
+    "heading": "使用子网掩码的分组转发过程",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 352,
+    "document_id": 20,
+    "chunk_index": 25,
+    "char_start": 10680,
+    "char_end": 10839,
+    "slide_no": 76,
+    "heading": "分析主机H1向主机H2发送的分组如何到达目的主机。",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 353,
+    "document_id": 20,
+    "chunk_index": 26,
+    "char_start": 10840,
+    "char_end": 11219,
+    "slide_no": 76,
+    "heading": "分析主机H1向主机H2发送的分组如何到达目的主机。",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 354,
+    "document_id": 20,
+    "chunk_index": 27,
+    "char_start": 11220,
+    "char_end": 11379,
+    "slide_no": 77,
+    "heading": "分析主机H1向主机H2发送的分组如何到达目的主机。",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 355,
+    "document_id": 20,
+    "chunk_index": 28,
+    "char_start": 11380,
+    "char_end": 11710,
+    "slide_no": 77,
+    "heading": "分析主机H1向主机H2发送的分组如何到达目的主机。",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 356,
+    "document_id": 20,
+    "chunk_index": 29,
+    "char_start": 11711,
+    "char_end": 11870,
+    "slide_no": 78,
+    "heading": "分析主机H1向主机H2发送的分组如何到达目的主机。",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 357,
+    "document_id": 20,
+    "chunk_index": 30,
+    "char_start": 11871,
+    "char_end": 12210,
+    "slide_no": 78,
+    "heading": "分析主机H1向主机H2发送的分组如何到达目的主机。",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 358,
+    "document_id": 20,
+    "chunk_index": 31,
+    "char_start": 12211,
+    "char_end": 12370,
+    "slide_no": 79,
+    "heading": "分析主机H1向主机H2发送的分组如何到达目的主机。",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 359,
+    "document_id": 20,
+    "chunk_index": 32,
+    "char_start": 12371,
+    "char_end": 12963,
+    "slide_no": 79,
+    "heading": "分析主机H1向主机H2发送的分组如何到达目的主机。",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 360,
+    "document_id": 20,
+    "chunk_index": 33,
+    "char_start": 12866,
+    "char_end": 13418,
+    "slide_no": 81,
+    "heading": "4.3.3 无分类编址 CIDR",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 361,
+    "document_id": 20,
+    "chunk_index": 34,
+    "char_start": 13354,
+    "char_end": 13871,
+    "slide_no": 84,
+    "heading": "4.3.3 无分类编址 CIDR",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 362,
+    "document_id": 20,
+    "chunk_index": 35,
+    "char_start": 13784,
+    "char_end": 14234,
+    "slide_no": 88,
+    "heading": "路由聚合(route aggregation)",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 363,
+    "document_id": 20,
+    "chunk_index": 36,
+    "char_start": 14139,
+    "char_end": 14727,
+    "slide_no": 89,
+    "heading": "CIDR 地址块划分举例",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 364,
+    "document_id": 20,
+    "chunk_index": 37,
+    "char_start": 14645,
+    "char_end": 15206,
+    "slide_no": 91,
+    "heading": "最长前缀匹配",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 365,
+    "document_id": 20,
+    "chunk_index": 38,
+    "char_start": 15108,
+    "char_end": 15677,
+    "slide_no": 95,
+    "heading": "4.4.2 ICMP的应用举例",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 366,
+    "document_id": 20,
+    "chunk_index": 39,
+    "char_start": 15588,
+    "char_end": 16072,
+    "slide_no": 98,
+    "heading": "4.4.2 ICMP的应用举例",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 367,
+    "document_id": 20,
+    "chunk_index": 40,
+    "char_start": 15972,
+    "char_end": 16475,
+    "slide_no": 102,
+    "heading": "4.4.2 ICMP的应用举例",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 368,
+    "document_id": 20,
+    "chunk_index": 41,
+    "char_start": 16388,
+    "char_end": 16964,
+    "slide_no": 104,
+    "heading": "4.6 因特网的路由选择协议4.6.1 有关路由选择协议的几个基本概念",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 369,
+    "document_id": 20,
+    "chunk_index": 42,
+    "char_start": 16880,
+    "char_end": 17479,
+    "slide_no": 108,
+    "heading": "“距离”的定义",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 370,
+    "document_id": 20,
+    "chunk_index": 43,
+    "char_start": 17479,
+    "char_end": 18272,
+    "slide_no": 111,
+    "heading": "距离向量算法（路由）",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 371,
+    "document_id": 20,
+    "chunk_index": 44,
+    "char_start": 18273,
+    "char_end": 18608,
+    "slide_no": 113,
+    "heading": "距离向量算法（路由）",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 372,
+    "document_id": 20,
+    "chunk_index": 45,
+    "char_start": 18609,
+    "char_end": 19127,
+    "slide_no": 114,
+    "heading": "RIP 协议的优缺点",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 373,
+    "document_id": 20,
+    "chunk_index": 46,
+    "char_start": 19045,
+    "char_end": 19613,
+    "slide_no": 120,
+    "heading": "“坏消息传播慢”举例",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 374,
+    "document_id": 20,
+    "chunk_index": 47,
+    "char_start": 19560,
+    "char_end": 20155,
+    "slide_no": 123,
+    "heading": "“坏消息传播慢”举例",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 375,
+    "document_id": 20,
+    "chunk_index": 48,
+    "char_start": 20106,
+    "char_end": 20704,
+    "slide_no": 128,
+    "heading": "“坏消息传播慢”举例",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 376,
+    "document_id": 20,
+    "chunk_index": 49,
+    "char_start": 20641,
+    "char_end": 21196,
+    "slide_no": 131,
+    "heading": "“坏消息传播慢”举例",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 377,
+    "document_id": 20,
+    "chunk_index": 50,
+    "char_start": 21143,
+    "char_end": 21634,
+    "slide_no": 136,
+    "heading": "4.8.2 网络地址转换 NAT",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 378,
+    "document_id": 20,
+    "chunk_index": 51,
+    "char_start": 21634,
+    "char_end": 21687,
+    "slide_no": 141,
+    "heading": "静态地址转换",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 379,
+    "document_id": 20,
+    "chunk_index": 52,
+    "char_start": 21688,
+    "char_end": 22288,
+    "slide_no": 142,
+    "heading": "静态地址转换",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 380,
+    "document_id": 20,
+    "chunk_index": 53,
+    "char_start": 22215,
+    "char_end": 22357,
+    "slide_no": 145,
+    "heading": "复用地址转换",
+    "filename": "ch4_网络层.pptx"
+  },
+  {
+    "id": 381,
+    "document_id": 21,
+    "chunk_index": 0,
+    "char_start": 0,
+    "char_end": 593,
+    "slide_no": 1,
+    "heading": "5.1 运输层协议概述",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 382,
+    "document_id": 21,
+    "chunk_index": 1,
+    "char_start": 503,
+    "char_end": 862,
+    "slide_no": 6,
+    "heading": "5.2.2 UDP 的首部格式",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 383,
+    "document_id": 21,
+    "chunk_index": 2,
+    "char_start": 815,
+    "char_end": 1262,
+    "slide_no": 9,
+    "heading": "计算 UDP 检验和的例子",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 384,
+    "document_id": 21,
+    "chunk_index": 3,
+    "char_start": 1212,
+    "char_end": 1775,
+    "slide_no": 9,
+    "heading": "计算 UDP 检验和的例子",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 385,
+    "document_id": 21,
+    "chunk_index": 4,
+    "char_start": 1692,
+    "char_end": 2259,
+    "slide_no": 11,
+    "heading": "5.3 传输控制协议TCP概述",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 386,
+    "document_id": 21,
+    "chunk_index": 5,
+    "char_start": 2202,
+    "char_end": 2734,
+    "slide_no": 15,
+    "heading": "5.4.1 停止等待协议",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 387,
+    "document_id": 21,
+    "chunk_index": 6,
+    "char_start": 2674,
+    "char_end": 3215,
+    "slide_no": 20,
+    "heading": "5.4.2 连续 ARQ 协议",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 388,
+    "document_id": 21,
+    "chunk_index": 7,
+    "char_start": 3128,
+    "char_end": 3679,
+    "slide_no": 23,
+    "heading": "5.4.2 连续 ARQ 协议",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 389,
+    "document_id": 21,
+    "chunk_index": 8,
+    "char_start": 3580,
+    "char_end": 4153,
+    "slide_no": 26,
+    "heading": "5.4.2 连续 ARQ 协议",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 390,
+    "document_id": 21,
+    "chunk_index": 9,
+    "char_start": 4053,
+    "char_end": 4649,
+    "slide_no": 29,
+    "heading": "5.4.2 连续 ARQ 协议",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 391,
+    "document_id": 21,
+    "chunk_index": 10,
+    "char_start": 4582,
+    "char_end": 5159,
+    "slide_no": 32,
+    "heading": "5.4.2 连续 ARQ 协议",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 392,
+    "document_id": 21,
+    "chunk_index": 11,
+    "char_start": 5091,
+    "char_end": 5673,
+    "slide_no": 35,
+    "heading": "窗口 ： 占 2 字节。接收方将自己的接收窗口大小填在该字段，发送给发送方，发送方用该字段来让设置自己的发送窗口大小，单位为字节。",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 393,
+    "document_id": 21,
+    "chunk_index": 12,
+    "char_start": 5591,
+    "char_end": 6180,
+    "slide_no": 41,
+    "heading": "5.6.1 以字节为单位的滑动窗口",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 394,
+    "document_id": 21,
+    "chunk_index": 13,
+    "char_start": 6108,
+    "char_end": 6702,
+    "slide_no": 45,
+    "heading": "接收缓存",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 395,
+    "document_id": 21,
+    "chunk_index": 14,
+    "char_start": 6643,
+    "char_end": 7244,
+    "slide_no": 49,
+    "heading": "接收缓存",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 396,
+    "document_id": 21,
+    "chunk_index": 15,
+    "char_start": 7191,
+    "char_end": 7359,
+    "slide_no": 53,
+    "heading": "5.7 TCP 的流量控制5.7.1 利用滑动窗口实现流量控制",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 397,
+    "document_id": 21,
+    "chunk_index": 16,
+    "char_start": 7283,
+    "char_end": 7865,
+    "slide_no": 54,
+    "heading": "5.7 TCP 的流量控制5.7.1 利用滑动窗口实现流量控制",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 398,
+    "document_id": 21,
+    "chunk_index": 17,
+    "char_start": 7809,
+    "char_end": 8314,
+    "slide_no": 55,
+    "heading": "持续计时器(persistence timer)。",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 399,
+    "document_id": 21,
+    "chunk_index": 18,
+    "char_start": 8233,
+    "char_end": 8784,
+    "slide_no": 58,
+    "heading": "举例说明",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 400,
+    "document_id": 21,
+    "chunk_index": 19,
+    "char_start": 8701,
+    "char_end": 9301,
+    "slide_no": 63,
+    "heading": "慢开始算法的原理",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 401,
+    "document_id": 21,
+    "chunk_index": 20,
+    "char_start": 9239,
+    "char_end": 9831,
+    "slide_no": 66,
+    "heading": "当网络出现拥塞时",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 402,
+    "document_id": 21,
+    "chunk_index": 21,
+    "char_start": 9743,
+    "char_end": 10338,
+    "slide_no": 69,
+    "heading": "慢开始和拥塞避免算法的实现举例",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 403,
+    "document_id": 21,
+    "chunk_index": 22,
+    "char_start": 10262,
+    "char_end": 10856,
+    "slide_no": 73,
+    "heading": "2. 快重传和快恢复",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 404,
+    "document_id": 21,
+    "chunk_index": 23,
+    "char_start": 10779,
+    "char_end": 11362,
+    "slide_no": 80,
+    "heading": "5.8.3 随机早期检测 RED (Random Early Detection)",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 405,
+    "document_id": 21,
+    "chunk_index": 24,
+    "char_start": 11297,
+    "char_end": 11888,
+    "slide_no": 83,
+    "heading": "丢弃概率 p 与 THmin 和 THmax 的关系",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 406,
+    "document_id": 21,
+    "chunk_index": 25,
+    "char_start": 11841,
+    "char_end": 12384,
+    "slide_no": 89,
+    "heading": "客户服务器方式",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 407,
+    "document_id": 21,
+    "chunk_index": 26,
+    "char_start": 12305,
+    "char_end": 12884,
+    "slide_no": 93,
+    "heading": "客户服务器方式",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 408,
+    "document_id": 21,
+    "chunk_index": 27,
+    "char_start": 12802,
+    "char_end": 13381,
+    "slide_no": 97,
+    "heading": "客户服务器方式",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 409,
+    "document_id": 21,
+    "chunk_index": 28,
+    "char_start": 13325,
+    "char_end": 13542,
+    "slide_no": 100,
+    "heading": "客户服务器方式",
+    "filename": "ch5_运输层.pptx"
+  },
+  {
+    "id": 410,
+    "document_id": 22,
+    "chunk_index": 0,
+    "char_start": 0,
+    "char_end": 521,
+    "slide_no": 1,
+    "heading": "6.1 域名系统 DNS6.1.1 域名系统概述",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 411,
+    "document_id": 22,
+    "chunk_index": 1,
+    "char_start": 462,
+    "char_end": 1045,
+    "slide_no": 7,
+    "heading": "树状层次结构的域名服务器",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 412,
+    "document_id": 22,
+    "chunk_index": 2,
+    "char_start": 1002,
+    "char_end": 1536,
+    "slide_no": 12,
+    "heading": "区的不同划分方法举例",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 413,
+    "document_id": 22,
+    "chunk_index": 3,
+    "char_start": 1492,
+    "char_end": 2072,
+    "slide_no": 16,
+    "heading": "DNS查询示例",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 414,
+    "document_id": 22,
+    "chunk_index": 4,
+    "char_start": 1979,
+    "char_end": 2555,
+    "slide_no": 20,
+    "heading": "域名的解析过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 415,
+    "document_id": 22,
+    "chunk_index": 5,
+    "char_start": 2469,
+    "char_end": 3067,
+    "slide_no": 26,
+    "heading": "域名的解析过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 416,
+    "document_id": 22,
+    "chunk_index": 6,
+    "char_start": 2976,
+    "char_end": 3513,
+    "slide_no": 30,
+    "heading": "域名的解析过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 417,
+    "document_id": 22,
+    "chunk_index": 7,
+    "char_start": 3420,
+    "char_end": 3986,
+    "slide_no": 33,
+    "heading": "域名的解析过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 418,
+    "document_id": 22,
+    "chunk_index": 8,
+    "char_start": 3895,
+    "char_end": 4444,
+    "slide_no": 37,
+    "heading": "URL 的一般形式",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 419,
+    "document_id": 22,
+    "chunk_index": 9,
+    "char_start": 4356,
+    "char_end": 4940,
+    "slide_no": 43,
+    "heading": "持续连接",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 420,
+    "document_id": 22,
+    "chunk_index": 10,
+    "char_start": 4858,
+    "char_end": 5440,
+    "slide_no": 48,
+    "heading": "HTTP 的报文结构（响应报文）",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 421,
+    "document_id": 22,
+    "chunk_index": 11,
+    "char_start": 5386,
+    "char_end": 5925,
+    "slide_no": 54,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 422,
+    "document_id": 22,
+    "chunk_index": 12,
+    "char_start": 5825,
+    "char_end": 6361,
+    "slide_no": 57,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 423,
+    "document_id": 22,
+    "chunk_index": 13,
+    "char_start": 6289,
+    "char_end": 6783,
+    "slide_no": 59,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 424,
+    "document_id": 22,
+    "chunk_index": 14,
+    "char_start": 6704,
+    "char_end": 7230,
+    "slide_no": 61,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 425,
+    "document_id": 22,
+    "chunk_index": 15,
+    "char_start": 7151,
+    "char_end": 7749,
+    "slide_no": 63,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 426,
+    "document_id": 22,
+    "chunk_index": 16,
+    "char_start": 7662,
+    "char_end": 8235,
+    "slide_no": 66,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 427,
+    "document_id": 22,
+    "chunk_index": 17,
+    "char_start": 8188,
+    "char_end": 8785,
+    "slide_no": 71,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 428,
+    "document_id": 22,
+    "chunk_index": 18,
+    "char_start": 8726,
+    "char_end": 9325,
+    "slide_no": 78,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 429,
+    "document_id": 22,
+    "chunk_index": 19,
+    "char_start": 9250,
+    "char_end": 9395,
+    "slide_no": 83,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 430,
+    "document_id": 22,
+    "chunk_index": 20,
+    "char_start": 9395,
+    "char_end": 9688,
+    "slide_no": 84,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 431,
+    "document_id": 22,
+    "chunk_index": 21,
+    "char_start": 9689,
+    "char_end": 10281,
+    "slide_no": 85,
+    "heading": "常见的状态码和短语",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 432,
+    "document_id": 22,
+    "chunk_index": 22,
+    "char_start": 10182,
+    "char_end": 10614,
+    "slide_no": 89,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 433,
+    "document_id": 22,
+    "chunk_index": 23,
+    "char_start": 10569,
+    "char_end": 10933,
+    "slide_no": 90,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 434,
+    "document_id": 22,
+    "chunk_index": 24,
+    "char_start": 10833,
+    "char_end": 11230,
+    "slide_no": 91,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 435,
+    "document_id": 22,
+    "chunk_index": 25,
+    "char_start": 11130,
+    "char_end": 11553,
+    "slide_no": 92,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 436,
+    "document_id": 22,
+    "chunk_index": 26,
+    "char_start": 11453,
+    "char_end": 11899,
+    "slide_no": 93,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 437,
+    "document_id": 22,
+    "chunk_index": 27,
+    "char_start": 11799,
+    "char_end": 12214,
+    "slide_no": 94,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 438,
+    "document_id": 22,
+    "chunk_index": 28,
+    "char_start": 12115,
+    "char_end": 12532,
+    "slide_no": 95,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 439,
+    "document_id": 22,
+    "chunk_index": 29,
+    "char_start": 12432,
+    "char_end": 12877,
+    "slide_no": 96,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 440,
+    "document_id": 22,
+    "chunk_index": 30,
+    "char_start": 12815,
+    "char_end": 13237,
+    "slide_no": 97,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  },
+  {
+    "id": 441,
+    "document_id": 22,
+    "chunk_index": 31,
+    "char_start": 13137,
+    "char_end": 13552,
+    "slide_no": 98,
+    "heading": "DHCP 协议的工作过程",
+    "filename": "ch6_应用层.pptx"
+  }
+]

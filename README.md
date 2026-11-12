@@ -328,13 +328,14 @@ make build       # 前端生产构建
 
 ## 10. 已知限制
 
-- 演示知识库仅 4 份 markdown 课件（8 个分块），检索指标只能说明流程正确，不足以支撑规模结论；换真实课件后需重跑 `make eval` 与 `scripts/retrieval_bench.py`
+- 仓库自带的演示知识库仅 4 份 markdown 课件（8 个分块），指标只能说明流程正确；`docs/experiments/` 里的评测另用**真实课件**（4 份 PPTX / 88 个分块 / 60 条人工标注）跑过，两套口径不同、不可横向比较
 - PDF 扫描页未接入 OCR（仅记录 `ocr_pages`，提示人工补录）
 - `.env.example` 默认仍为 `hash`（保证克隆即跑、不下载 2GB 模型）；**要真实语义检索**请切 `EMBEDDING_PROVIDER=local`（BGE-M3）或 `api`，切换后必须 `reindex`
 - 检索门禁按「未登录词率 + 相关度」双条件判定，仍无法拦住"部分术语命中"的领域外提问（如用含"数据库"的 DNS 段落回答 B+ 树问题）
 - 课程删除：仅创建者/管理员可在课程卡片右下角删除，会连带清理课件、知识点、题库、试卷、作答、向量与上传文件（不可恢复，前端二次确认）
-- 两阶段重排已实现（`RERANK_BACKEND=off|cross|llm`）。实测**同源交叉编码器 bge-reranker 在本语料零增益**（分数压在 0.5），LLM listwise 重排把 Hit@1 从 69.2% 拉到 100%，代价 1.2s / 2.2k tokens per 次，故导学（SSE）默认不开
-- 升级过程与量化收益见 [`docs/experiments/retrieval-upgrade.md`](docs/experiments/retrieval-upgrade.md)（Hit@1 53.8%→69.2%，Hit@3 76.9%→100%）
+- 两阶段重排已实现（`RERANK_BACKEND=off|cross|llm`）。实测**同源交叉编码器 bge-reranker 在本语料零增益**（分数压在 0.5），LLM listwise 重排有效，代价约 1.2s / 2.2k tokens per 次，故导学（SSE）默认不开
+- 真实课件上的当前水平（60 条标注）：Hit@1 **0.750**、Hit@3 **0.950**、误纳率 **0.150**；口语类仍是短板（0.667 / 0.867），提升空间在查询改写而非继续调参
+- 全部实验（演进路径、五档切块、阈值扫描、场景化检索策略）见 [`docs/experiments/README.md`](docs/experiments/README.md) 索引
 - 主观题评分依赖 LLM 质量，低置信结果转人工（`needs_human`），系统不做「自动放行」
 - 前端未做 SSR 与移动端深度适配（测评页已按栅格自适应）
 - 压测脚本已就绪但需在目标机器执行后才能填入实测数字

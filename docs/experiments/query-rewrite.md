@@ -109,5 +109,5 @@ MIN_RETRIEVE_SCORE=0.60   # 配合改写使用
 |---|---|
 | `app/rag/query_rewrite.py` | 改写实现（含缓存与降级） |
 | `tests/unit/test_query_rewrite.py` | 成功/失败降级/缓存/空输入 7 个用例 |
-| `eval_out/bench-course8-rewrite.json` | 改写版逐条结果（含 `rewritten` 字段） |
+| `bench-course8-rewrite.json` | 改写版逐条结果（含 `rewritten` 字段），已归档在 `docs/experiments/` |
 | `scripts/retrieval_bench.py` | 新增 `--rewrite` |

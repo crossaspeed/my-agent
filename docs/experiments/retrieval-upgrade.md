@@ -420,5 +420,6 @@ python backend/scripts/bench_report.py bench.json
 **这不是一次性的数字，换语料/换模型都要重扫。** 复现：
 
 ```bash
-python scripts/threshold_sweep.py eval_out/bench.json --start 0.45 --end 0.65 --step 0.01
+python scripts/threshold_sweep.py docs/experiments/bench-course8-final-llm-t055.json \
+  --start 0.45 --end 0.65 --step 0.01
 ```

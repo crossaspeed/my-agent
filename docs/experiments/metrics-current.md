@@ -1,7 +1,7 @@
 # 当前指标速查（截至 2026-11-12）
 
 > 一门课（计算机网络2 / course_id=8）、4 份 PPT、60 条人工标注 query（语料内 40 + 领域外 20）。
-> 数据文件：`bench-course8-final-t055.json`。所有数字均为实测，可由脚本复算。
+> 数据文件：`bench-course8-final-llm-t055.json`。所有数字均为实测，可由脚本复算。
 
 ## 一、当前生效配置
 
@@ -139,13 +139,14 @@
 
 ```bash
 # 评测
-docker compose cp eval_out/cases.csv api:/tmp/cases.csv
+docker compose cp docs/experiments/cases-course8.csv api:/tmp/cases.csv
 docker compose cp backend/scripts/retrieval_bench.py api:/tmp/retrieval_bench.py
 MSYS_NO_PATHCONV=1 docker compose exec -T api python /tmp/retrieval_bench.py \
   --cases /tmp/cases.csv --course-id 8 --rerank --out /tmp/bench.json
 
 # 阈值扫描（离线，不用重启）
-python backend/scripts/threshold_sweep.py eval_out/bench-course8-final-t055.json \
+python backend/scripts/threshold_sweep.py \
+  docs/experiments/bench-course8-final-llm-t055.json \
   --start 0.45 --end 0.65 --step 0.01
 ```
 
