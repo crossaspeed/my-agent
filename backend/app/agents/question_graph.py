@@ -108,6 +108,8 @@ async def retrieve_node(state: dict[str, Any]) -> dict[str, Any]:
         for query in queries.get(kp_id, [spec["name"]])[:3]:
             # 这里不逐条 query 重排：交叉编码器在 CPU 上约 60ms/对，19 个知识点 × 3 条 query
             # 会累积到分钟级；改为每个知识点只对"合并后的候选集"重排一次（见下方）
+            # 也不做查询改写：这些 query 由 LLM 针对知识点生成（plan 节点），本身就是术语化
+            # 检索式，等于已经改写过一遍；再改是重复劳动，且会多消耗 19×3 次 LLM 调用。
             hits = await retrieve(
                 ctx.session,
                 ctx.course_id,
@@ -115,6 +117,7 @@ async def retrieve_node(state: dict[str, Any]) -> dict[str, Any]:
                 top_k=5,
                 doc_ids=doc_ids,
                 use_rerank=False,
+                use_rewrite=False,
                 use_cache=True,
             )
             for hit in hits:

@@ -14,7 +14,7 @@ from app.core import cache
 from app.core.config import settings
 from app.core.logging import get_logger
 from app.db.models import ChunkKnowledgePoint, Document, DocumentChunk
-from app.rag import bm25_index, rerank
+from app.rag import bm25_index, query_rewrite, rerank
 from app.rag.embedder import get_embedder
 from app.rag.vector_store import get_vector_store
 
@@ -83,9 +83,11 @@ def rrf_fuse(dense: list[int], sparse: list[int], k: int = 60) -> list[tuple[int
 
 
 def _cache_key(course_id: int, query: str, top_k: int, kp_ids: list[int] | None,
-               doc_ids: list[int] | None, rerank_backend: str = "off") -> str:
+               doc_ids: list[int] | None, rerank_backend: str = "off",
+               rewrite: bool = False) -> str:
     raw = json.dumps(
-        [course_id, query, top_k, kp_ids, doc_ids, rerank_backend], ensure_ascii=False
+        [course_id, query, top_k, kp_ids, doc_ids, rerank_backend, rewrite],
+        ensure_ascii=False,
     )
     return "search:" + hashlib.sha256(raw.encode()).hexdigest()[:32]
 
@@ -135,6 +137,7 @@ async def retrieve(
     kp_ids: list[int] | None = None,
     doc_ids: list[int] | None = None,
     use_rerank: bool = False,
+    use_rewrite: bool = False,
     expand: bool = False,
     use_cache: bool = True,
 ) -> list[RetrievedChunk]:
@@ -143,17 +146,31 @@ async def retrieve(
     # 两阶段检索的第二阶段由配置总开关控制，调用点用 use_rerank 表达"本场景允许重排"
     rerank_backend = settings.RERANK_BACKEND.strip().lower()
     do_rerank = bool(use_rerank) and rerank_backend not in ("", "off", "none", "0", "false")
+    # 查询改写同理：配置总开关 + 调用点声明，两者同时满足才生效（导学可开、后台任务可关）
+    do_rewrite = bool(use_rewrite) and settings.QUERY_REWRITE_ENABLED
     key = _cache_key(
-        course_id, query, top_k, kp_ids, doc_ids, rerank_backend if do_rerank else "off"
+        course_id, query, top_k, kp_ids, doc_ids,
+        rerank_backend if do_rerank else "off", do_rewrite,
     )
     if use_cache:
         cached = cache.get_json(key)
         if cached:
             return [RetrievedChunk(**item) for item in cached]
 
+    # 改写只影响“拿什么去检索”，对外仍以原问题为标识；失败自动退回原查询
+    search_query = query
+    if do_rewrite:
+        search_query, rewrite_meta = await query_rewrite.rewrite_query(query)
+        if not rewrite_meta.get("rewritten"):
+            logger.info(
+                "query_rewrite_skipped course_id=%s reason=%s",
+                course_id,
+                rewrite_meta.get("reason"),
+            )
+
     candidates = settings.RETRIEVE_CANDIDATES
     embedder = get_embedder()
-    vector = await embedder.embed_query(query)
+    vector = await embedder.embed_query(search_query)
     dense_hits = await get_vector_store().search(
         course_id, vector, top_k=candidates, doc_ids=doc_ids
     )
@@ -161,7 +178,7 @@ async def retrieve(
     dense_score = {hit.chunk_id: max(0.0, hit.score) for hit in dense_hits}
 
     index = await bm25_index.get_index(session, course_id)
-    sparse_hits = index.search(query, top_k=candidates)
+    sparse_hits = index.search(search_query, top_k=candidates)
     sparse_ids = [cid for cid, score in sparse_hits if score > 0]
     # BM25 原始分没有上界。早期实现用「分数 / 本次最高分」归一，导致 top1 恒等于 1.0，
     # relevance 因此失去绝对尺度，MIN_RETRIEVE_SCORE 实际永不触发。
@@ -173,7 +190,7 @@ async def retrieve(
     }
 
     # 查询词级信号：哪些词根本不在本课程语料里（考纲外判定），以及 top chunk 覆盖了几个词
-    terms = bm25_index.tokenize(query)
+    terms = bm25_index.tokenize(search_query)
     known_terms = [t for t in terms if t in index.vocab]
     unknown_ratio = 1.0 - (len(known_terms) / len(terms)) if terms else 1.0
 
@@ -212,7 +229,7 @@ async def retrieve(
     # 第二阶段：对 RRF 召回的候选做精排（配置开关 + 调用点允许才生效，失败自动降级）
     if do_rerank and results:
         rerank_inputs = len(results)
-        results = await rerank.apply_rerank(query, results, max(top_k, 1))
+        results = await rerank.apply_rerank(search_query, results, max(top_k, 1))
         logger.info(
             "rerank_applied",
             course_id=course_id,

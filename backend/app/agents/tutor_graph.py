@@ -136,8 +136,12 @@ async def retrieve_node(state: dict[str, Any]) -> dict[str, Any]:
     names = [kp_names.get(int(k), "") for k in [state.get("root_kp_id")] + list(state.get("prerequisite_kps") or [])]
     names = [n for n in names if n]
     query = " ".join(names) or str(question.get("stem", ""))[:120]
-    # 导学是 SSE 流式交互，首字延迟优先，显式不启用重排（见 docs/experiments/retrieval-upgrade.md）
-    chunks = await retrieve(ctx.session, ctx.course_id, query, top_k=5, use_rerank=False)
+    # 首次检索的 query 是「知识点名称拼接」，本身就是教材术语（知识点由课件抽取），
+    # 再做一次改写纯属重复劳动；且 SSE 首字延迟优先，显式不启用重排。
+    # 场景化检索策略见 docs/experiments/metrics-current.md 第 9 节。
+    chunks = await retrieve(
+        ctx.session, ctx.course_id, query, top_k=5, use_rerank=False, use_rewrite=False
+    )
     ctx.remember(chunks)
     return {"refs": [c.to_ref() for c in chunks], "ref_ids": [c.chunk_id for c in chunks]}
 
@@ -146,8 +150,12 @@ async def retrieve_followup(state: dict[str, Any]) -> dict[str, Any]:
     ctx: AgentContext = state["_ctx"]
     question = state.get("question") or {}
     query = f"{state.get('user_query') or ''} {question.get('stem', '')[:80]}".strip()
-    # 导学是 SSE 流式交互，首字延迟优先，显式不启用重排（见 docs/experiments/retrieval-upgrade.md）
-    chunks = await retrieve(ctx.session, ctx.course_id, query, top_k=5, use_rerank=False)
+    # 追问是系统中**唯一**由学生自由语言构成的检索入口（"为什么会堵车"这类口语，或英文提问），
+    # 与教材术语存在语义鸿沟 → 这是查询改写唯一的必要场景。实测口语类 Hit@3 0.867→1.000、
+    # 跨语言 relevance 平均 +0.25，代价约 +1s（首字延迟）；重排对导学收益低，仍不开。
+    chunks = await retrieve(
+        ctx.session, ctx.course_id, query, top_k=5, use_rerank=False, use_rewrite=True
+    )
     ctx.remember(chunks)
     existing = {int(r["chunk_id"]) for r in state.get("refs") or []}
     merged = list(state.get("refs") or []) + [

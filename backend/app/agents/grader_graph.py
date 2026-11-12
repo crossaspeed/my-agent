@@ -144,8 +144,13 @@ async def retrieve_rubric(state: dict[str, Any]) -> dict[str, Any]:
     if not query:
         return {"retrieved_refs": []}
     try:
+        # query = 题干 + 解析，两者都是教材语言的产物（题干由课件片段生成、解析含原文措辞），
+        # 是最典型的"字面类"查询。实测 15 条字面查询改写后 Hit@1 无一提升、
+        # relevance 均值 -0.007（最差一条 1.000→0.667，被"的定义"这类补语稀释），
+        # 属于净损失：白花约 1s/题，还稀释字面重合。因此阅卷不改写。
         chunks = await retrieve(
-            ctx.session, ctx.course_id, query[:300], top_k=5, use_rerank=True
+            ctx.session, ctx.course_id, query[:300], top_k=5,
+            use_rerank=True, use_rewrite=False,
         )
     except Exception as exc:
         logger.warning("grader_retrieve_failed", error=str(exc))

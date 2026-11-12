@@ -80,6 +80,7 @@ async def search(
         doc_ids=req.doc_ids,
         expand=req.expand,
         use_rerank=req.use_rerank,
+        use_rewrite=req.use_rewrite,
         use_cache=False,
     )
     return ok(

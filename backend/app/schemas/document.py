@@ -60,6 +60,8 @@ class SearchRequest(BaseModel):
     expand: bool = False
     # 是否对本条 query 启用重排（需服务端 RERANK_BACKEND 非 off 才真正生效）
     use_rerank: bool = False
+    # 是否启用查询改写（需服务端 QUERY_REWRITE_ENABLED=true 才真正生效）
+    use_rewrite: bool = False
 
 
 class RetrievedChunkOut(BaseModel):
